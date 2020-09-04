@@ -4,19 +4,44 @@ Remove redundancy in SARS-CoV-2 genome sequence ensembles for ingestion into Nex
 # Motivation
 With the global viral sequencing effort generating 100,000+ genomes for SARS-CoV-2, we are starting to hit the limits of phylogenetic (a.k.a. evolutionary tree) methods to handle large inputs. This tool is intended to help researchers select a subset of those 100,000+ that fits their analysis needs, ideally with as little sampling bias as possible since to date some countries (e.g. U.K.) produce many sequences relative to their population, and others (e.g. U.S.) produce few genomes relative to the number of cases. 
 
-# How it works
-As of 2020-08-28, there are 92144 "full" SARS-CoV-2 genomes in [GISAID](https://gisaid.org/CoV2020). Using a straight text comparison, 81730 of these are unique. On the other hand, only 73602 are non-redundant after filtering changes in error prone regions like the very ends of the genome, and selected internal mismatch sites as defined by careful manual tree analysis (e.g. Nybbler uses [Weilguny et al., 2020](https://github.com/W-L/ProblematicSites_SARS-CoV2)).  Nybbler maps all of the reads to the reference genome (currently [MN908947.3](https://www.ncbi.nlm.nih.gov/nuccore/MN908947)), then constructs a hash table key consisting of the [CIGAR](https://jef.works/blog/2017/03/28/CIGAR-strings-for-dummies/) and [MD](https://github.com/vsbuffalo/devnotes/wiki/The-MD-Tag-in-BAM-Files) tags of a sensitivity-tweaked [minimap2](https://github.com/lh3/minimap2) alignment output, supplemented with the actual reference insertion bases from the alignments. The CIGAR and MD are modified to incorporate the end mask and internal site mask configuration.
+## Installation
+Clone this repository if you have not done so already:
 
-Sequences that are exactly the same after masking, but are from different countries or more specific locations can be of particular interest for epidemiology, therefore Nybbler allows non-redundancy to be rolled up globally, per region (0), country (1), state/province (2), or city/area (3) with the optional last argument. So, global analysis:
+```
+$ git clone https://github.com/nodrogluap/nybbler
+$ cd nybbler
+```
 
-```shell
+This program is fairly simple but depends on [minimap2](https://github.com/lh3/minimap2) being in your path, as well as the Perl packages YAML::XS (for reading the config file) and File::Fetch (for downloading reference data).
+
+If you have these requirements already, you are good to go. If not, these requirements can be easily met with the included conda environment, with no administrator privileges required, like so:
+
+```$ conda env create -f nybbler.yml```
+
+Then any time you want to run the program start with:
+
+```$ conda activate nybbler```
+
+The input ```sequence.fasta``` and ```metadata.tsv``` data files needed to run Nybbler would typically be downloaded directly from [GISAID](https://gisaid.org/CoV2020) under EpiCov -> Downloads, labelled "nextmeta" and "nextfasta". 
+
+## The basics
+As of 2020-08-28, there are 92144 "full" SARS-CoV-2 genomes in [GISAID](https://gisaid.org/CoV2020). Using a straight text comparison, 81730 of these are unique. On the other hand, only 73602 are non-redundant after filtering changes in the error-prone end regions of the genome, and selected internal high frequency error sites as defined by careful manual tree analysis (e.g. Nybbler uses [Weilguny et al., 2020](https://github.com/W-L/ProblematicSites_SARS-CoV2) by default). See the "Advanced usage" section below for details on how a core of ~7000 genomes can be derived using Nybbler.
+
+Nybbler maps all of the reads to the reference genome (currently [MN908947.3](https://www.ncbi.nlm.nih.gov/nuccore/MN908947)), then constructs a hash table key consisting of the [CIGAR](https://jef.works/blog/2017/03/28/CIGAR-strings-for-dummies/) and [MD](https://github.com/vsbuffalo/devnotes/wiki/The-MD-Tag-in-BAM-Files) tags of a sensitivity-tweaked minimap2 alignment output, supplemented with the actual reference insertion bases from the alignments. The CIGAR and MD are modified by Nybbler to incorporate the end mask and internal site mask configuration.
+
+Sequences that are exactly the same after masking, but are from different countries or more specific locations can be of particular interest for epidemiology, therefore Nybbler allows non-redundancy to be rolled up globally (default, no arg), per region (0), country (1), state/province (2), or city/area (3) with the optional last argument. So, global analysis:
+
+```
 $ ./nybbler minimum_config.yaml my_output_dir
 ```
 
 Whereas for country-level analysis:
 
-```shell
+```
 $ ./nybbler minimum_config.yaml my_output_dir_by_country 1
 ```
 
-Nybbler is designed to be compatible with the [defaults/parameters.yaml](https://github.com/nextstrain/ncov/blob/master/defaults/parameters.yaml) file in NextStrain's [ncov](https://github.com/nextstrain/ncov-ingest), which could be used for downstream processing of the sequence (FASTA) and metadata (TSV) files generated by this tool in ```my_output_dir```. The minimum format of the config file is provided as ```minimum_config.yaml``` in this repository, in case you aren't using ncov-ingest. The input sequence.fasta and metadata.tsv files would typically be downloaded directly from [GISAID](https://gisaid.org/CoV2020) under EpiCov -> Downloads, labelled "nextmeta" and "nextfasta". 
+Nybbler is designed to be compatible with the [defaults/parameters.yaml](https://github.com/nextstrain/ncov/blob/master/defaults/parameters.yaml) file in NextStrain's [ncov](https://github.com/nextstrain/ncov), which could be used for downstream processing of the sequence (FASTA) and metadata (TSV) files generated by this tool in ```my_output_dir```. The minimum format of the config file is provided as ```minimum_config.yaml``` in this repository, in case you aren't using NextStrain. 
+
+## Advanced usage
+
