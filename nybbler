@@ -1,0 +1,656 @@
+#!/usr/bin/env perl
+
+# Generates a "representative" subset of all pubic SARS-CoV-2 genomes for phylogenetic analysis while still retaining the full data for 
+# text annotation display in NextStrain's Web user interface by abusing the literature reference URL metadata field.
+# 
+# Collapses samples within each juridiction if they are non meaningfully different in sequence, i.e. same except maybe masked (known problematic) positions.
+
+use strict;
+use warnings;
+use File::Basename;        # core
+use File::Temp 'tempdir';  # core
+use IPC::Open2;            # core
+use File::Fetch;           # core since Perl 5.3
+use YAML::XS 'LoadFile';   # typically via bioconda perl-yaml-libyaml
+use vars qw($genbank_id_placeholder $query_key_placeholder $webenv_placeholder $format_placeholder $genbank_eutils_search_uri $genbank_eutils_fetch_fasta_uri);
+
+$genbank_id_placeholder = "_ID_PLACEHOLDER_";
+$format_placeholder = "__format__";
+# As per official e-utils docs https://www.ncbi.nlm.nih.gov/books/NBK25498/
+$webenv_placeholder = "WebEnv";
+$query_key_placeholder = "QueryKey";
+$genbank_eutils_search_uri = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&usehistory=y&term=$genbank_id_placeholder\[accn\]";
+$genbank_eutils_fetch_fasta_uri = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&query_key=$query_key_placeholder&WebEnv=$webenv_placeholder&rettype=$format_placeholder&retmode=text";
+
+@ARGV == 4 or @ARGV == 5 or die "Usage: $0 <parameters.yaml> <local_meta.tsv> <local_seqs.fasta> <output dir> [jurisdiction granularity 0-3 for collapsing samples, where 0 is region, 1 is country, 2 is division (state, province, etc.), 3 is location (city, etc.)]\n",
+                  "This tools should be run usually from the top level directory of a clone of https://github.com/nextstrain/ncov, with defaults/parameters.yaml as the first argument\n";
+my $nextstrain_config_file = shift @ARGV;
+my $output_dir = shift @ARGV;
+my $jurisdiction_granularity_level = @ARGV ? shift @ARGV : undef;
+
+if(defined $jurisdiction_granularity_level and (not $jurisdiction_granularity_level =~ /^\d$/ or $jurisdiction_granularity_level > 3)){
+	die "Inavlid argument for jurisdiction granularity provided ($jurisdiction_granularity_level): expected [0,3]\n";
+}
+
+if(not -e $output_dir){
+	mkdir $output_dir or die "Could not create $output_dir: $!\n";
+}
+elsif(not -d $output_dir){
+	die "Requested output name '$output_dir' exists, but is not a directory as required\n";
+}
+
+# Read config so that ops applied here mesh with NextStrain criteria for alignment consideration and tree building.
+# Currently using - sequences, metadata, mask:mask_from_beginning, mask:mask_from_end, mask:mask_sites, filter:min_length
+my $nextstrain_config = LoadFile($nextstrain_config_file);
+
+# Use the wisdom of the collective to, while collapsing samples, ignore sequences variants likely to not contribute 
+# meaningfully to the phylogenetic analysis because they are artefactual, neighbour linked, or homoplasic.
+my %pos2mask;
+my $genbank_reference_id;
+for my $vcf (split /\s+/, $nextstrain_config->{"mask"}->{"mask_sites_vcf"} ){
+	my $id = read_vcf_from_uri($vcf, \%pos2mask);
+	if(not defined $genbank_reference_id){
+		$genbank_reference_id = $id;
+	}
+	elsif(defined $genbank_reference_id and $id ne $genbank_reference_id){
+		die "Mask sites VCF $vcf does not have the same reference sequence ID ($id) as defined in an earlier mask sites VCF ($genbank_reference_id), please sync the mask sites VCF files\n";
+	}
+}
+
+# Get (specially adjusted) samtools MD and CIGAR strings for each sequence relative to the reference genome used in the VCF, so masked sites 
+# can be applied appropriately using reference-based coordinates.
+my (%id2sequence, %id2seqhash);
+&get_seqs_and_hashkeys($genbank_reference_id, $nextstrain_config, \%pos2mask, \%id2sequence, \%id2seqhash);
+
+# Read in all the sequences, adjusting them to the relevant NextStrain alignment region vis-a-vis the reference genome.
+my %id2date;
+
+# We will keep track of the redundant sequences at the level of jurisdiction provided in NextStrain metadata.
+my %key2earliest_id; 
+my %key2later_ids; # hash of id arrays
+
+my %overriding_keys;
+
+my $fasta_local = $nextstrain_config->{"overriding_sequences"};
+my $metadata_local = $nextstrain_config->{"overriding_metadata"};
+my $metadata_header = &read_metadata_file($metadata_local, 
+		    $fasta_local, 
+		    \%id2seqhash, \%id2date, \%key2earliest_id, \%key2later_ids, 
+		    $jurisdiction_granularity_level, \%overriding_keys, 1);
+my $metadata_header2 = &read_metadata_file($nextstrain_config->{"metadata"}, 
+		    $nextstrain_config->{"sequences"}, 
+		    \%id2seqhash, \%id2date, \%key2earliest_id, \%key2later_ids, 
+		    $jurisdiction_granularity_level, \%overriding_keys, 0); # 0 = no-clobber of existing hash keys with later dates
+
+if(defined $metadata_local and not -z $metadata_local and $metadata_header ne $metadata_header2){
+	die "Different headers for metadata files provided, therefore cannot guarantee proper merger, please resolve and run this analysis again\n";
+}
+
+print STDERR "Found ", scalar(keys %key2earliest_id), "/", scalar(keys %id2sequence)," unique sequences after site masking", 
+             (defined $jurisdiction_granularity_level ? " and jurisdiction level $jurisdiction_granularity_level clustering" : ""), "\n";
+# Generate the title field that summarizes relevant identical sequence info that's been collapsed.
+# e.g. date range of the identical isolates, and if they differ in the "caution" sites
+my %id2title;
+generate_titles(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2title);
+
+# Print the new metadata and sequence files
+my $redux_metadata_file = "$output_dir/".basename($nextstrain_config->{"metadata"});
+my $redux_sequence_file = "$output_dir/".basename($nextstrain_config->{"sequences"});
+write_new_combined_metadata($redux_metadata_file, \%id2title, $metadata_local, $nextstrain_config->{"metadata"});
+write_sequences(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2sequence, $jurisdiction_granularity_level, $redux_sequence_file);
+
+###################################
+# subroutine definitions
+###################################
+
+sub write_new_combined_metadata{
+	my ($metadata_file_out, $id2title, @metadata_files) = @_;
+
+	open(META_OUT, ">$metadata_file_out")
+          or die "Cannot open $metadata_file_out for writing: $!\n";
+	my %column_name2index;
+	my %id_printed_already; # avoid dupes between multiple metadata files
+	my $column_to_override = "title";
+	my $id_column_name = "strain";
+	for my $metadata_file (@metadata_files){
+		open(META_IN, $metadata_file)
+	  	  or die "Cannot open $metadata_file for reading: $!\n";
+		while(<META_IN>){
+			chomp;
+			if($. == 1){
+				if(not keys %column_name2index){
+					my $index = 0;
+					for my $name (split /\t/, $_){$column_name2index{$name} = $index++}
+					die "Required column $column_to_override was not found in $metadata_file\n" if not exists $column_name2index{$column_to_override};
+					die "Required column $id_column_name was not found in $metadata_file\n" if not exists $column_name2index{$id_column_name};
+					print META_OUT $_; # print the first header we encounter
+				}
+				next;
+			}
+			my @F = split /\t/, $_;
+			my $id = $F[$column_name2index{$id_column_name}];
+			next unless exists $id2title->{$id}; # is it a keeper?
+			if(defined $id2title->{$id}){ # does it have useful new title data
+				$F[$column_name2index{$column_to_override}] = $id2title->{$id}; 
+			}
+			print META_OUT join("\t", @F), "\n" unless $id_printed_already{$id}++;
+		}
+	}
+	close(META_OUT);
+}
+	
+sub write_sequences{
+	my ($key2earliest_id, $key2later_ids, $id2date, $id2sequence, $jurisdiction_granularity_level, $redux_sequence_file) = @_;
+
+	open(FASTA_OUT, ">$redux_sequence_file")
+	  or die "Cannot open $redux_sequence_file for writing: $!\n";
+	# Sort for possible downstream convenience rather than necessity.
+	my @all_keys = keys %$key2earliest_id;
+	my @global_keys;
+	my %global_instances;
+	my %jurisdiction_totals; # so we can calculate proportions 
+	if(defined $jurisdiction_granularity_level){
+		for my $key (@all_keys){
+			my @key_fields = split(":", $key);
+			my $num_samples_per_key = (exists $key2later_ids->{$key} ? scalar(@{$key2later_ids->{$key}}) : 0) + 1;
+			my $global_key_prefix = join(":", @key_fields[0 .. 2]).":";
+                        $global_instances{$global_key_prefix} += $num_samples_per_key;
+			my $global_key_suffix = join("/", @key_fields[3 .. $#key_fields]);
+			$jurisdiction_totals{$global_key_suffix} += $num_samples_per_key;
+                } 
+	}
+	for my $key (sort {date_cmp($id2date, $key2earliest_id->{$a}, $key2earliest_id->{$b})} @all_keys){ 
+		my $id = $key2earliest_id->{$key};
+		my @ids_by_date = exists $key2later_ids->{$key} ? sort({date_cmp($id2date, $a, $b)} @{$key2later_ids->{$key}}, $id) : ($id);
+
+		# Do some key manipulation to see how often the sequence exists across all jurisdictions 
+		my $jurisdiction_proportion = "";
+		my $jurisdiction_instances = "";
+		my @key_fields = split(":", $key);
+		my $global_key_prefix = join(":", @key_fields[0 .. 2]).":";
+		my $global_instances = "global=$global_instances{$global_key_prefix} ";
+		if(defined $jurisdiction_granularity_level){
+			my $global_key_suffix = join("/", @key_fields[3 .. $#key_fields]);
+			$jurisdiction_proportion = sprintf("proportion=%.4f ", scalar(@ids_by_date)/$jurisdiction_totals{$global_key_suffix});
+			$jurisdiction_instances = "instances=". scalar(@ids_by_date). " ";
+		}
+
+		print FASTA_OUT ">$id hash=\"$key\" date-range=\"\[", join("-",@{$id2date->{$ids_by_date[0]}}), ",", join("-",@{$id2date->{$ids_by_date[$#ids_by_date]}}), "\]\" ", 
+				 $global_instances, $jurisdiction_instances, $jurisdiction_proportion, 
+                                 join(" ", grep {$_ ne $id} @ids_by_date), "\n", $id2sequence->{$id}, "\n";
+	}
+	close(FASTA_OUT);
+}
+
+sub generate_titles{
+	my ($key2earliest_id, $key2later_ids, $id2date, $id2title) = @_;
+
+	for my $key (keys %$key2earliest_id){ # key is the concatenation of the seqhash and juridiction for a sample
+		next unless exists $key2later_ids->{$key}; # nothing to summarize
+		my @ids_by_date = sort {&date_cmp($id2date, $a, $b)} @{$key2later_ids->{$key}};
+		my $title = "see also ";
+		if(@ids_by_date == 1){
+			$title .= "isolate $ids_by_date[0] dated ". $id2date->{$ids_by_date[0]};
+		}
+		else{
+			if(not date_cmp($id2date, $ids_by_date[0], $ids_by_date[$#ids_by_date])){
+				$title .= scalar(@ids_by_date)." isolates all dated ".$id2date->{$ids_by_date[0]};
+			}
+			else{
+				$title .= scalar(@ids_by_date)." isolates in date range [". $id2date->{$ids_by_date[0]}. ",". $id2date->{$ids_by_date[$#ids_by_date]}. "]";
+			}	
+		}
+		$title .= ", with identical sequence after masking known problematic sites";
+	 	$id2title->{$key2earliest_id->{$key}} = $title eq "see also " ? undef : $title;
+	}
+}
+
+sub write_genbank_data_file{
+	my ($genbank_reference_id, $tmpdir, $format) = @_;
+
+	# Start: somewhat tedious but thoroughly error checking process to use NCBI e-utils to search for 
+	# and fetch the reference genome in FASTA format to a file, starting with just the accession ID.
+	my $uri_contents;
+	my $eutils_uri = $genbank_eutils_search_uri;
+	$eutils_uri =~ s/$genbank_id_placeholder/$genbank_reference_id/;
+        my $ff = File::Fetch->new(uri => $eutils_uri);
+	$ff->fetch(to => \$uri_contents);
+        if(not $uri_contents){
+                die "Cannot fetch URI ($eutils_uri): ", $ff->error(), "\n";
+        }
+	my ($query_key, $webenv);
+	if($uri_contents =~ /<$query_key_placeholder>(\S+)<\/$query_key_placeholder>/){
+		$query_key = $1;
+	} 
+	else{
+		die "Could not find $query_key_placeholder in results for NCBI E-Utils query $eutils_uri\nSearch response was:\n$uri_contents\n";
+	}
+	if($uri_contents =~ /<$webenv_placeholder>(\S+)<\/$webenv_placeholder>/){
+		$webenv = $1;
+	} 
+	else{
+		die "Could not find $webenv_placeholder in results for NCBI E-Utils query $eutils_uri\nSearch response was:\n$uri_contents\n";
+	}
+	$eutils_uri = $genbank_eutils_fetch_fasta_uri;
+	$eutils_uri =~ s/=$query_key_placeholder/=$query_key/;
+	$eutils_uri =~ s/=$webenv_placeholder/=$webenv/;
+	$eutils_uri =~ s/=$format_placeholder/=$format/;
+	$ff = File::Fetch->new(uri => $eutils_uri);
+	my $tmp_ref_fasta = $ff->fetch(to => $tmpdir);
+        if(not $tmp_ref_fasta){
+                die "Cannot fetch URI ($eutils_uri): ", $ff->error(), "\n";
+        }
+	# End: accession-based FASTA sequence fetch.
+	return $tmp_ref_fasta;
+}
+
+# Grabs the sequence record from local hash as per config YAML spec
+sub write_reference_strain_data_file{
+	my ($nextstrain_config, $id2sequence, $tmpdir) = @_;
+	if(not exists $nextstrain_config->{"refine"}->{"root"}){
+		die "No mask:mask_sites_vcf provided in the YAML config, please specify a fallback reference strain spec in the config as refine:root\n";
+	}
+	my $root_to_use;
+	for my $strain (split /\s+/, $nextstrain_config->{"refine"}->{"root"}){
+		if(exists $id2sequence{$strain}){
+			$root_to_use = $id2sequence{$strain};
+			last;
+		}
+	}
+	if(not defined $root_to_use){
+		die "None of the refine:root config options is a valid strain filtered from ", $nextstrain_config->{"sequences"}, "\n";
+	}
+
+	my $tmp_ref_fasta = "$tmpdir/ref.fna";
+	open(REF, ">$tmp_ref_fasta") or die "Cannot open $tmp_ref_fasta for writing: $!n";
+	print REF ">$root_to_use\n$id2sequence{$root_to_use}\n";
+	close(REF);
+	return $tmp_ref_fasta;
+}
+
+# Here we need to download the reference genome, and read the other sequences, align and see how they align using minimap2 (if they are long enough 
+# to be considered according to the NextStrain config).
+sub get_seqs_and_hashkeys{
+	my ($genbank_reference_id, $nextstrain_config, $pos2mask, $id2sequence, $id2hashkey) = @_;
+
+	# Local file, load only sequences >= min_length.
+	read_fasta($nextstrain_config->{"sequences"}, $id2sequence, $nextstrain_config->{"filter"}->{"min_length"});
+	
+	# Set the reference based on the mask site VCF, or fallback to the NextStrain config.
+	my $tmpdir = tempdir( CLEANUP => 1 );
+	my $tmp_ref_fasta;
+	if(defined $genbank_reference_id){
+		$tmp_ref_fasta = &write_genbank_data_file($genbank_reference_id, $tmpdir, "fasta");
+	}
+	else{
+		$tmp_ref_fasta = &write_reference_strain_data_file($nextstrain_config, $id2sequence, $tmpdir);
+	}
+
+	# Write the queries to a file to avoid open2 buffering issues.
+	my $query_file = "$tmpdir/query.fna";
+	open(QUERY, ">$query_file")
+	  or die "Cannot open $query_file for writing: $!n";
+
+	# Write the long-enough sequences.
+	for my $seq_id (keys %$id2sequence){
+		print QUERY ">$seq_id\n", $id2sequence->{$seq_id}, "\n";
+	}
+	close(QUERY);
+
+	# Launch MD-annotated minimap2 alignment child process, params adjusted to minimize mismatch penalty, maximize match extensions and gap spanning.
+	# This minizes the soft-clipping that can lead to false positive sameness  in non-masked areas of less than complete genomes.
+	open(MINIMAP2, "minimap2 -t 6 -B 2 -O 2 -E 2 -z 1000,500 -s 40 -a --MD $tmp_ref_fasta $query_file|")
+	  or die "Cannot run minimap2: $!\n";
+
+	# Read the alignment ref start position, CIGAR (query consumption) and MD (ref consumption) results; adjust to generate common coordinate/diff system
+	# regardless of where the alignment starts for any given sequence (e.g. due to terminal mismatches or truncated ends of the genome).
+	my $reference_length;
+	my %minimapped_ids; # keep track of which ones actually got hits (hopefully all!)
+	while(<MINIMAP2>){
+		chomp;
+		# Ignore all headers except  something like @SQ     SN:MN908947.3   LN:29903
+		if(/^\@/){ # header
+			if(/^\@SQ\tSN:\S+\tLN:(\d+)/){
+				$reference_length = $1;
+				print "Reference length is $reference_length ($genbank_reference_id)\n";
+			}
+			next;
+		}
+
+		my @F = split /\t/, $_;
+		# Pertinent columns are 1-4, 6, 10, second-to-last
+		# Run sanity checks first
+		if($F[2] ne  $genbank_reference_id){
+			die "Something is very wrong: reference in samtools output ($F[2]) was not expected value '$genbank_reference_id'\n";
+		}
+		next unless $F[1] == 0; # samtools flags should be forward strand, primary, no pairing information
+		my $id = $F[0];
+		if(not exists $id2sequence->{$id}){
+			die "Something is very wrong: samtools output contains matches for '$id' but this was not included in the queries to minimap2\n";
+		}
+		$minimapped_ids{$id}++;
+
+		my $ref_start_pos = $F[3];
+		my $cigar = $F[5];
+		my $md = $F[$#F-1]; # variable absolute location depending on actual alignment, but always the penultimate field
+		$md =~ s/MD:Z://;
+		my $orig_md = $md;
+
+		# Adjust the CIGAR record so it always reflects the start of the reference if the query starts somewhere the default masked area.
+		my $reference_bases_consumed = 0; # i.e. how much of the reference is incorporated into the alignment?
+		$reference_bases_consumed += $1 while $md =~ /(\d+)/g;
+		$reference_bases_consumed += length($&) while $md =~ /([ACGTRYSWKMNBDHV]+)/g;
+		
+		my $five_prime_supplement = $F[3]-1; # where the alignment starts in the reference genome
+		if($five_prime_supplement <= $nextstrain_config->{"mask"}->{"mask_from_beginning"}){ # if the clip doesn't extend beyond the default end masking of NextStrain
+			$cigar =~ s/^(\d+)[HS]//; #useless
+			# Safely ignore the difference and pretend the alignment extended to the query 5' end
+			$cigar =~ s/^(\d+)M/($1+$five_prime_supplement)."M"/e; # safely ignore the difference
+			$md =~ s/^(\d+)/$1+$five_prime_supplement/e;
+		}
+		else{
+			my ($clip) = $cigar =~ /^(\d+)[HS]/;
+			$clip ||= 0;
+			if($five_prime_supplement > $clip){
+				$cigar = ($five_prime_supplement-$clip)."N".$cigar; # mark the loction of the match start by prepending the CIGAR "skipped region" info
+			}
+			$five_prime_supplement = 0;
+		}
+
+		# Adjust the MD and CIGAR to ignore differences (mismatches, deletions and insertions) wholly within the NextStrain 5' mask.
+		while($md =~ /^(\d+)\^?([ACGTRYSWKMNBDHV]+)\d+/ and $1+length($2) <= $nextstrain_config->{"mask"}->{"mask_from_beginning"}){
+			$md =~ s/^(\d+)\^?([ACGTRYSWKMNBDHV]+)(\d+)/$1+length($2)+$3/e;
+		}
+		while($cigar =~ /^(\d+)M(\d+)[DIM]/ and $1+$2 <= $nextstrain_config->{"mask"}->{"mask_from_beginning"}){
+                        $cigar =~ s/^(\d+)M(\d+)([DIM])/($1+($3 ne "I" ? $2 : 0))."M"/e;
+                }
+
+		# See how far in the reference the alignment extends, then extend to the end if terminus is within the masked region.
+		my $three_prime_supplement = $reference_length - $reference_bases_consumed - $five_prime_supplement;
+		if($three_prime_supplement < 0){
+			warn "Something wrong: MD length ($reference_bases_consumed) for $id is longer than the reference sequence ($reference_length): $md\n";
+		}
+		elsif($three_prime_supplement){
+			if($three_prime_supplement <= $nextstrain_config->{"mask"}->{"mask_from_end"}){
+				$cigar =~ /(\d+)[HS]$/; # trailing clip info to be replaced below with "match" pad as it's in the nextstrain mask 3' end area
+				$md =~ s/(\d+)$/$1 + $three_prime_supplement/e; # extend to the end of the reference, potentially goes over real query length, but no big deal
+				$cigar =~ s/(\d+)M(?:\d+[HS])?$/($1+$three_prime_supplement)."M"/e;
+			}
+			else{
+				my ($clip) = $cigar =~ /(\d+)[HS]$/;
+				$clip ||= 0;
+                        	if($five_prime_supplement > $clip){
+					$cigar .= ($three_prime_supplement-$clip)."N";
+				}
+				$three_prime_supplement = 0; # according to nextstrain criterium, too big a supplement to qualify
+			}
+		}
+		# Adjust the 3' end of the MD to ignore differences too.
+		while($md =~ /\d+\^?([ACGTRYSWKMNBDHV]+)(\d+)$/ and length($1)+$2 < $nextstrain_config->{"mask"}->{"mask_from_end"}){
+			$md =~ s/(\d+)\^?([ACGTRYSWKMNBDHV]+)(\d+)$/$1+length($2)+$3/e;
+		}
+		while($cigar =~ /\d+M(\d+)[DIM]$/ and $1 <= $nextstrain_config->{"mask"}->{"mask_from_end"}){
+                        $cigar =~ s/(\d+)M(\d+)([DIM])$/($1+($3 ne "I" ? $2 : 0))."M"/e;
+                }
+
+		# Merge any runs of matches that we created.
+		$cigar =~ s/(\d+)M(\d+)M/($1+$2)."M"/eg;
+
+		# Now we need to ignore the masked reference bases if they are causing non-match in the MD.
+		if(defined $nextstrain_config->{"mask"}->{"mask_sites"}){
+			for my $masked_reference_base (split / /, $nextstrain_config->{"mask"}->{"mask_sites"}){
+				$pos2mask->{$masked_reference_base} = "NextStrainMaskConfig" if not exists $pos2mask->{$masked_reference_base};
+			}
+		}
+		my $ref_cursor = 1; 
+		my $new_md = "";
+		my $prev_bit = "";
+		while($md =~ /(\d+|\^[ACGTRYSWKMNBDHV]+|[ACGTRYSWKMNBDHV])/g){ # 3 regex options: match, deletion (all at once), mismatch (one base at a time so each mask pos can be checked independently)
+			my $bit = $1;
+			if($bit =~ /^\d+$/){ # match, keep as-is for now and print prev bit
+				$ref_cursor += $bit;
+				if($prev_bit =~ /^\d+$/){ # extend the run (a mismatch was dropped on last iter)
+					$prev_bit += $bit;
+				}
+				else{
+					$new_md .= $prev_bit;
+					$prev_bit = $bit;
+				}
+			} 
+			elsif($bit =~ /^\^/){ # deletion, keep as-is for now and print prev bit (we don't have reason to handle deletion masking yet)
+				$ref_cursor += length($bit)-1; # -1 because we want to ignore the caret
+				$new_md .= $prev_bit;
+				$prev_bit = $bit;
+			}
+			else{
+				# A mismatch base, see of it should be masked (i.e. the MD tag fixed to ignore the diff)
+				if(exists $pos2mask->{$ref_cursor}){
+					if($prev_bit =~ /^\d+$/){ # simple extend the existing upstream match length
+						$prev_bit += 1;
+					}
+					else{ # need to start a new match run since prev base was a non-masked mismatch
+						$new_md .= $prev_bit;
+						$prev_bit = 1;
+					}
+				}
+				else{ # a real, informative mismatch to keep
+					$new_md .= $prev_bit;
+					$prev_bit = $bit;
+					$ref_cursor += length($bit);
+				}
+			}
+		}
+		$new_md .= $prev_bit;
+
+		# We've covered the reference mismatches and deletions, now we need to cover the query insertions, which are encoded in the CIGAR
+		# The actual sequences for the insetions need to be retrieved so that we can dinstinguish two different insetions of the same length 
+		# in the same locale from each other.
+		my $insert_bases = "";
+		my $query_consumed = 0; # use zero-based coord since we are substr()ing only
+		my $cigar_ref_consumed = 0; # as opposed to the MD ref consumption calc earlier
+		while($cigar =~ /(\d+)([HSDMI])/g){
+			my ($length, $type) = ($1, $2);
+			if($type eq "I"){
+				if($query_consumed-$five_prime_supplement < 0){
+					warn "Something's wrong: CIGAR ($cigar / $F[5]) for $id extends ($query_consumed-$five_prime_supplement) beyond the 5' end\n";
+				}
+				elsif($query_consumed-$five_prime_supplement >= length($id2sequence{$id})){
+					warn "Something's wrong: CIGAR ($cigar / $F[5]) for $id extends ($query_consumed-$five_prime_supplement) beyond sequence length (", length($id2sequence{$id}), ")\n";
+				}
+				$insert_bases .= substr($id2sequence{$id}, $query_consumed-$five_prime_supplement, $length);
+			}
+			$query_consumed += $length unless $type eq "D"; # deletions don't consume query sequence
+			$cigar_ref_consumed += $length if $type eq "M" or $type eq "D"; # insertions and clipping don't consume ref sequence
+		}
+		# Sanity check the CIGAR parsing and extensions.
+		if($five_prime_supplement and $three_prime_supplement){
+			if($cigar_ref_consumed != $reference_bases_consumed+$five_prime_supplement+$three_prime_supplement){	
+				warn "Something's wrong: parsed CIGAR ref consumption ($cigar_ref_consumed) != reference length ($reference_bases_consumed+$five_prime_supplement+$three_prime_supplement",
+                       	     	     ") for $id. 5' extension was $five_prime_supplement, 3' extension was $three_prime_supplement and CIGAR was $cigar (original $F[5]), new MD=$md, MD = $orig_md\n";
+			}
+		}
+
+		# Option to aggressively consider seqs the same if they differ only in end-gaps outside the end-masked regions.
+		# $cigar =~ s/^(\d+)N(\d+)M/($1+$2)."M"/e;
+		# $cigar =~ s/(\d+)M(\d+)N$/($1+$2)."M"/e;
+
+		# Record the MD that has eliminated masked difference from the alignment.
+		$id2hashkey->{$id} = $new_md.":".$cigar.":".$insert_bases;
+	}
+	close(MINIMAP2);
+	print STDERR "Finished reading minimap2 results\n";
+
+	# Check that all sequences passed into minimap2 actually had a mapping result.
+	for my $id (keys %id2sequence){
+		if(not exists $minimapped_ids{$id}){
+			warn "Warning: input sequence $id had no mapping result against the reference genome, ignoring this sequence for downstream processing\n";
+		}
+	}
+}
+
+sub read_fasta{
+	my ($filename, $data_out, $min_length) = @_;
+	open(FASTA, $filename)
+	  or die "Cannot open ", $nextstrain_config->{"sequences"}, " for reading: $!\n";
+	my ($id, $seq);
+	while(<FASTA>){
+		if(/>(\S+)/){
+			if(defined $id and length($seq) >= $min_length){
+				$data_out->{$id} = $seq; 
+			}
+			$seq = "";
+			$id = $1; next;
+		}
+		else{
+			$seq .= $1 while /(\S+)/g;
+		}
+	}
+	$data_out->{$id} = $seq if defined $id and length($seq) >= $min_length;
+	close(FASTA);
+}
+
+sub read_vcf_from_uri{
+	my ($sites_vcf_uri, $pos2data, $data_regex) = @_;
+
+	my $uri_contents;
+	my $ff = File::Fetch->new(uri => $sites_vcf_uri);
+	if(not $ff->fetch(to => \$uri_contents)){
+		die "Cannot fetch URI $sites_vcf_uri: ", $ff->error(), "\n";
+	}
+	my $ref_id;
+	for (split /\n/, $uri_contents){
+	        next if /^#/;
+       		my @F = split /\t/, $_;
+        	if($#F < 7){
+                	warn "Skipping VCF line #$. as it does not have at least 8 tab delimited fields as expected (downloaded from $sites_vcf_uri)\n";
+                	next;
+        	}
+		$ref_id = $F[0] if not defined $ref_id;
+		if(defined $data_regex){
+        		if($F[7] !~ /;EXC=(\S+?);/){
+                		warn "Skipping cautions for $F[0] position $F[1]: cannot parse EXC INFO field from VCF line #$. (downloaded from $sites_vcf_uri)\n";
+                		next;
+        		}
+        		$pos2data->{$F[1]} = [split /,/, $1]; # store the reasons for caution, which are separated by commas like nicely behaved VCF INFO entries
+		}
+		else{
+			$pos2data->{$F[1]} = 1;
+		}
+	}
+	return $ref_id;
+}
+
+sub read_metadata_file{
+	my ($metadata_filename, $sequence_filename, $id2seqhash, $id2date, $key2earliest_id, $key2later_ids, $jurisdiction_granularity_level, $overriding_keys, $override_mode) = @_;
+
+	if(not defined $metadata_filename){
+		return undef;
+	}
+
+	open(META, $metadata_filename)
+		or die "Cannot open $metadata_filename for reading: $!\n";
+	my $header;
+	while(<META>){
+		if($. == 1){
+			$header .= $_;
+			next;
+		}
+		chomp;
+		my @F = split /\t/, $_;
+		my $id = $F[0];
+		my $key = sample2key(\@F, $id2seqhash, $jurisdiction_granularity_level);
+		next unless defined $key;
+		if(exists $id2date->{$id}){
+			if($override_mode){
+				warn "Duplicate definition of $id in overriding metadata file $metadata_filename, ignoring redefinition on line #$.\n";
+			}
+			next; # silently ignore redefinition if not in override mode
+		}
+		$id2date->{$id} = [split /-/, $F[4]];
+		
+		if(exists $key2earliest_id->{$key}){
+			my $existing_id = $key2earliest_id->{$key};
+			# Keep the earliest one for the jurisdiction
+			if(date_cmp($id2date, $id, $existing_id) < 0){
+				if($override_mode){
+					push @{$key2later_ids->{$key}}, $existing_id;
+					$key2earliest_id->{$key} = $id;
+					$overriding_keys{$key} = 1;
+				}
+				else{
+					# Have to generate a new key so that the earlier non-overriding sample id (GISAID) does not clobber the earlier defined overriding one (local) in the same jurisdiction
+					$key .= ":earlier-non-clobbering" if exists $overriding_keys{$key};
+					if(exists $key2earliest_id->{$key}){
+						$existing_id = $key2earliest_id->{$key};
+						if(date_cmp($id2date, $id, $existing_id) < 0){
+							push @{$key2later_ids->{$key}}, $existing_id;
+                                        		$key2earliest_id->{$key} = $id;
+						}
+						else{
+							push @{$key2later_ids->{$key}}, $id;
+						}
+					}
+					else{
+						$key2earliest_id->{$key} = $id;
+					}
+				}
+			}
+			else{
+				push @{$key2later_ids->{$key}}, $id;
+			}
+		}
+		else{
+			$key2earliest_id->{$key} = $id;
+		}
+	}
+	close(META);
+	return $header;
+}
+
+sub date_cmp{
+	my ($id2date, $id_a, $id_b) = @_;
+
+	if(not exists $id2date->{$id_a}){
+		warn "no date for $id_a\n";
+		return 0;
+	}
+	if(not exists $id2date->{$id_b}){
+		warn "no date for $id_b\n";
+                return 0;
+	}
+
+	# Some dates are incomplete, mess up the <=> ops below, give lower precence than any complete date within that date slot (month or day)
+	my @date_a = map {$_ eq "XX" ? 32 : $_} @{$id2date->{$id_a}};
+	my @date_b = map {$_ eq "XX" ? 32 : $_} @{$id2date->{$id_b}};
+
+	# No valid year number?
+	$date_a[0] = 9999 if $date_a[0] !~ /^\d+$/;
+	$date_b[0] = 9999 if $date_b[0] !~ /^\d+$/;
+
+	# Missing the month?
+	push @date_a, "13" if $#date_a == 0;
+	push @date_b, "13" if $#date_b == 0;
+	
+	# Missing just the day (e.g. 2020-03)?
+	push @date_a, "32" if $#date_a == 1;
+	push @date_b, "32" if $#date_b == 1;
+
+	return (($date_a[0] <=> $date_b[0]) or
+               ($date_a[1] <=> $date_b[1]) or
+               ($date_a[2] <=> $date_b[2]));
+}
+
+# Generate the collapsing hash key by non-masked sequence per jurisdiction
+sub sample2key{
+	my ($metadata, $id2seqhash, $jurisdiction_granularity_level) = @_;
+	my $id = $metadata->[0];
+	if(not exists $id2seqhash->{$id}){	
+		warn "Skipping metadata entry $id because no equivalent sequence was found.\n";
+		return undef;
+	}
+	if(not defined $jurisdiction_granularity_level){
+		return $id2seqhash->{$id};
+	}
+	return $id2seqhash->{$id}.":".join("/",@{$metadata}[5 .. ($jurisdiction_granularity_level+5)]); # simple map of granularity level to field index in metadata
+}
+
