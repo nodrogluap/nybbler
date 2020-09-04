@@ -1,0 +1,32 @@
+name: nybbler
+channels:
+  - r
+  - bioconda
+  - defaults
+  - conda-forge
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - k8=0.2.5=he513fc3_0
+  - libgcc-ng=9.1.0=hdf63c60_0
+  - libstdcxx-ng=9.1.0=hdf63c60_0
+  - minimap2=2.17=hed695b0_3
+  - perl=5.26.2=h14c3975_0
+  - perl-app-cpanminus=1.7044=pl526_1
+  - perl-carp=1.38=pl526_3
+  - perl-constant=1.33=pl526_1
+  - perl-exporter=5.72=pl526_1
+  - perl-extutils-makemaker=7.36=pl526_1
+  - perl-file-fetch=0.56=pl526_0
+  - perl-file-path=2.16=pl526_0
+  - perl-file-temp=0.2304=pl526_2
+  - perl-ipc-cmd=1.02=pl526_0
+  - perl-locale-maketext-simple=0.21=pl526_2
+  - perl-module-corelist=5.20190524=pl526_0
+  - perl-module-load=0.32=pl526_1
+  - perl-module-load-conditional=0.68=pl526_2
+  - perl-module-metadata=1.000036=pl526_0
+  - perl-params-check=0.38=pl526_1
+  - perl-parent=0.236=pl526_1
+  - perl-version=0.9924=pl526_0
+  - perl-yaml-libyaml=0.66=pl526_1
+  - zlib=1.2.11=h7b6447c_3
