@@ -4,6 +4,11 @@
 sequences: "data/sequences.fasta"
 metadata: "data/metadata.tsv"
 
+# Nybbler-specific settings for overriding sequences. These sequences are guaranteed to be representatives in the Nybbler output regardless of
+# whether there are earlier samples with equivalent sequence in the regular  "sequeces" file.
+# overriding_sequences: "data/local_sequences.fasta"
+# overriding_metadata: "data/local_metadata.tsv"
+
 # Define files used for external configuration. Common examples consist of a
 # list of strains to include and exclude from analyses.
 files:
