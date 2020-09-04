@@ -1,5 +1,5 @@
 # Nybbler
-Remove redundancy in SARS-CoV-2 genome sequence ensembles for ingestion into NextStrain and other phylogenomic tools
+Remove redundancy in SARS-CoV-2 genome sequence ensembles. The output can be easily "nibbled" to generate a useful subset of the ensemble, before ingestion by phylogenomic tools such as NextStrain.
 
 # Motivation
 With the global viral sequencing effort generating 100,000+ genomes for SARS-CoV-2, we are starting to hit the limits of phylogenetic (a.k.a. evolutionary tree) methods to handle large inputs. This tool is intended to help researchers select a subset of those 100,000+ that fits their analysis needs, ideally with as little sampling bias as possible since to date some countries (e.g. U.K.) produce many sequences relative to their population, and others (e.g. U.S.) produce few genomes relative to the number of cases. 
