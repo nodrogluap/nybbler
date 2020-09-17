@@ -22,7 +22,7 @@ $query_key_placeholder = "QueryKey";
 $genbank_eutils_search_uri = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&usehistory=y&term=$genbank_id_placeholder\[accn\]";
 $genbank_eutils_fetch_fasta_uri = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&query_key=$query_key_placeholder&WebEnv=$webenv_placeholder&rettype=$format_placeholder&retmode=text";
 
-@ARGV == 4 or @ARGV == 5 or die "Usage: $0 <parameters.yaml> <local_meta.tsv> <local_seqs.fasta> <output dir> [jurisdiction granularity 0-3 for collapsing samples, where 0 is region, 1 is country, 2 is division (state, province, etc.), 3 is location (city, etc.)]\n",
+@ARGV == 2 or @ARGV == 3 or die "Usage: $0 <parameters.yaml> <output dir> [jurisdiction granularity 0-3 for collapsing samples, where 0 is region, 1 is country, 2 is division (state, province, etc.), 3 is location (city, etc.)]\n",
                   "This tools should be run usually from the top level directory of a clone of https://github.com/nextstrain/ncov, with defaults/parameters.yaml as the first argument\n";
 my $nextstrain_config_file = shift @ARGV;
 my $output_dir = shift @ARGV;
@@ -47,19 +47,23 @@ my $nextstrain_config = LoadFile($nextstrain_config_file);
 # meaningfully to the phylogenetic analysis because they are artefactual, neighbour linked, or homoplasic.
 my %pos2mask;
 my $genbank_reference_id;
-for my $vcf (split /\s+/, $nextstrain_config->{"mask"}->{"mask_sites_vcf"} ){
-	my $id = read_vcf_from_uri($vcf, \%pos2mask);
-	if(not defined $genbank_reference_id){
-		$genbank_reference_id = $id;
-	}
-	elsif(defined $genbank_reference_id and $id ne $genbank_reference_id){
-		die "Mask sites VCF $vcf does not have the same reference sequence ID ($id) as defined in an earlier mask sites VCF ($genbank_reference_id), please sync the mask sites VCF files\n";
+if(exists $nextstrain_config->{"mask"}->{"mask_sites_vcf"}){
+	print STDERR "Fetching masking site definitions\n";
+	for my $vcf (split /\s+/, $nextstrain_config->{"mask"}->{"mask_sites_vcf"} ){
+		my $id = read_vcf_from_uri($vcf, \%pos2mask);
+		if(not defined $genbank_reference_id){
+			$genbank_reference_id = $id;
+		}
+		elsif(defined $genbank_reference_id and $id ne $genbank_reference_id){
+			die "Mask sites VCF $vcf does not have the same reference sequence ID ($id) as defined in an earlier mask sites VCF ($genbank_reference_id), please sync the mask sites VCF files\n";
+		}
 	}
 }
 
 # Get (specially adjusted) samtools MD and CIGAR strings for each sequence relative to the reference genome used in the VCF, so masked sites 
 # can be applied appropriately using reference-based coordinates.
 my (%id2sequence, %id2seqhash);
+print STDERR "Loading sequences and calculating keys\n";
 &get_seqs_and_hashkeys($genbank_reference_id, $nextstrain_config, \%pos2mask, \%id2sequence, \%id2seqhash);
 
 # Read in all the sequences, adjusting them to the relevant NextStrain alignment region vis-a-vis the reference genome.
@@ -71,6 +75,7 @@ my %key2later_ids; # hash of id arrays
 
 my %overriding_keys;
 
+print STDERR "Loading sequence metadata\n";
 my $fasta_local = $nextstrain_config->{"overriding_sequences"};
 my $metadata_local = $nextstrain_config->{"overriding_metadata"};
 my $metadata_header = &read_metadata_file($metadata_local, 
@@ -86,6 +91,9 @@ if(defined $metadata_local and not -z $metadata_local and $metadata_header ne $m
 	die "Different headers for metadata files provided, therefore cannot guarantee proper merger, please resolve and run this analysis again\n";
 }
 
+
+&apply_includes_and_excludes(\%key2earliest_id, \%key2later_ids, $jurisdiction_granularity_level, $nextstrain_config);
+
 print STDERR "Found ", scalar(keys %key2earliest_id), "/", scalar(keys %id2sequence)," unique sequences after site masking", 
              (defined $jurisdiction_granularity_level ? " and jurisdiction level $jurisdiction_granularity_level clustering" : ""), "\n";
 # Generate the title field that summarizes relevant identical sequence info that's been collapsed.
@@ -96,12 +104,60 @@ generate_titles(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2title);
 # Print the new metadata and sequence files
 my $redux_metadata_file = "$output_dir/".basename($nextstrain_config->{"metadata"});
 my $redux_sequence_file = "$output_dir/".basename($nextstrain_config->{"sequences"});
+print STDERR "Writing new metadata ($redux_metadata_file) and sequence ($redux_metadata_file)\n";
 write_new_combined_metadata($redux_metadata_file, \%id2title, $metadata_local, $nextstrain_config->{"metadata"});
 write_sequences(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2sequence, $jurisdiction_granularity_level, $redux_sequence_file);
 
 ###################################
 # subroutine definitions
 ###################################
+
+sub apply_includes_and_excludes{
+	my($key2earliest_id, $key2later_ids, $id2date, $jurisdiction_granularity_level, $nextstrain_config) = @_;
+
+	my %earliest_id2key = reverse(%$key2earliest_id);
+	if(defined $nextstrain_config->{"files"}->{"include"}){
+		open(INCLUDE, $nextstrain_config->{"files"}->{"include"})
+		  or die "Cannot open ", $nextstrain_config->{"files"}->{"include"}, " for reading: $!\n";
+		while(<INCLUDE>){
+			next if /^\s*#/;
+                        if(/^(\S+)/ and not exists $earliest_id2key{$1}){
+				# Find the key that it's associated with currently 
+				for my $key (keys %$key2earliest_id){
+					 #TODO
+				}
+			}
+		}
+		close(INCLUDE);
+	} 
+	if(defined $nextstrain_config->{"files"}->{"exclude"}){
+		open(EXCLUDE, $nextstrain_config->{"files"}->{"exclude"})
+                  or die "Cannot open ", $nextstrain_config->{"files"}->{"exclude"}, " for reading: $!\n";
+                while(<EXCLUDE>){
+			next if /^\s*#/;
+			if(/^(\S+)/ and exists $earliest_id2key{$1}){
+				# Need to reassign the key to another seq, if present
+				my $strain_id_to_exclude = $1;
+				my $key = $earliest_id2key{$strain_id_to_exclude};
+				if(exists $key2later_ids->{$key}){
+					my @ids_by_date = sort {&date_cmp($id2date, $a, $b)} @{$key2later_ids->{$key}};
+					$key2earliest_id->{$key} = $ids_by_date[0];
+					if(scalar(@ids_by_date) == 1){
+						delete $key2later_ids->{$key}; # no equivs left
+					}
+					else{  # remove the promoted id from the equivs list
+						$key2later_ids->{$key} = [@ids_by_date[1 .. $#ids_by_date]];
+					}
+				}
+				else{
+					delete $key2earliest_id->{$key};
+				}
+				delete $id2date{$strain_id_to_exclude};
+			}
+                }
+                close(EXCLUDE);
+	}
+}
 
 sub write_new_combined_metadata{
 	my ($metadata_file_out, $id2title, @metadata_files) = @_;
@@ -113,6 +169,7 @@ sub write_new_combined_metadata{
 	my $column_to_override = "title";
 	my $id_column_name = "strain";
 	for my $metadata_file (@metadata_files){
+		next if not defined $metadata_file;
 		open(META_IN, $metadata_file)
 	  	  or die "Cannot open $metadata_file for reading: $!\n";
 		while(<META_IN>){
@@ -166,38 +223,49 @@ sub write_sequences{
 		# Do some key manipulation to see how often the sequence exists across all jurisdictions 
 		my $jurisdiction_proportion = "";
 		my $jurisdiction_instances = "";
-		my @key_fields = split(":", $key);
+		my @key_fields = split(":", $key, -1); # -1 meanbs keep the last field if blank after the delimiter
 		my $global_key_prefix = join(":", @key_fields[0 .. 2]).":";
-		my $global_instances = "global=$global_instances{$global_key_prefix} ";
+		my $global_instances = "global=". (defined $jurisdiction_granularity_level ? $global_instances{$global_key_prefix} : scalar(@ids_by_date)) . " ";
 		if(defined $jurisdiction_granularity_level){
 			my $global_key_suffix = join("/", @key_fields[3 .. $#key_fields]);
 			$jurisdiction_proportion = sprintf("proportion=%.4f ", scalar(@ids_by_date)/$jurisdiction_totals{$global_key_suffix});
 			$jurisdiction_instances = "instances=". scalar(@ids_by_date). " ";
 		}
 
-		print FASTA_OUT ">$id hash=\"$key\" date-range=\"\[", join("-",@{$id2date->{$ids_by_date[0]}}), ",", join("-",@{$id2date->{$ids_by_date[$#ids_by_date]}}), "\]\" ", 
+		print FASTA_OUT ">$id hash=\"$key\" date-range=\"\[", date2str($id2date, $ids_by_date[0]), ",", date2str($id2date, $ids_by_date[$#ids_by_date]), "\]\" ", 
 				 $global_instances, $jurisdiction_instances, $jurisdiction_proportion, 
                                  join(" ", grep {$_ ne $id} @ids_by_date), "\n", $id2sequence->{$id}, "\n";
 	}
 	close(FASTA_OUT);
 }
 
+sub date2str{
+	my ($id2date, $id) = @_;
+	if(not defined $id or not exists $id2date->{$id}){
+		return "N/A";
+	}
+	return join("-",@{$id2date->{$id}});
+}
+
 sub generate_titles{
 	my ($key2earliest_id, $key2later_ids, $id2date, $id2title) = @_;
 
 	for my $key (keys %$key2earliest_id){ # key is the concatenation of the seqhash and juridiction for a sample
-		next unless exists $key2later_ids->{$key}; # nothing to summarize
+		if(not exists $key2later_ids->{$key}){ # nothing to summarize
+			$id2title->{$key2earliest_id->{$key}} = undef;
+			next;
+		}
 		my @ids_by_date = sort {&date_cmp($id2date, $a, $b)} @{$key2later_ids->{$key}};
 		my $title = "see also ";
 		if(@ids_by_date == 1){
-			$title .= "isolate $ids_by_date[0] dated ". $id2date->{$ids_by_date[0]};
+			$title .= "isolate $ids_by_date[0] dated ". date2str($id2date, $ids_by_date[0]);
 		}
 		else{
 			if(not date_cmp($id2date, $ids_by_date[0], $ids_by_date[$#ids_by_date])){
-				$title .= scalar(@ids_by_date)." isolates all dated ".$id2date->{$ids_by_date[0]};
+				$title .= scalar(@ids_by_date)." isolates all dated ".date2str($id2date,$ids_by_date[0]);
 			}
 			else{
-				$title .= scalar(@ids_by_date)." isolates in date range [". $id2date->{$ids_by_date[0]}. ",". $id2date->{$ids_by_date[$#ids_by_date]}. "]";
+				$title .= scalar(@ids_by_date)." isolates in date range [". date2str($id2date, $ids_by_date[0]). ",". date2str($id2date, $ids_by_date[$#ids_by_date]). "]";
 			}	
 		}
 		$title .= ", with identical sequence after masking known problematic sites";
@@ -610,11 +678,11 @@ sub read_metadata_file{
 sub date_cmp{
 	my ($id2date, $id_a, $id_b) = @_;
 
-	if(not exists $id2date->{$id_a}){
+	if(not defined $id_a or not exists $id2date->{$id_a}){
 		warn "no date for $id_a\n";
 		return 0;
 	}
-	if(not exists $id2date->{$id_b}){
+	if(not defined $id_b or not exists $id2date->{$id_b}){
 		warn "no date for $id_b\n";
                 return 0;
 	}
