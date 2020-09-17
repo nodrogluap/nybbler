@@ -1,11 +1,11 @@
 # Based off https://raw.githubusercontent.com/nextstrain/ncov/master/defaults/parameters.yaml as of early September 2020
 # This file contains the subset of settings used in Nybbler
-# These are the two main starting files for the run, for SARS-CoV-2 typically downloaded as nextmeta and next fasta from GISAID.
+# These are the two main starting files for the run, for SARS-CoV-2 typically downloaded as nextmeta and nextfasta from GISAID.
 sequences: "data/sequences.fasta"
 metadata: "data/metadata.tsv"
 
 # Nybbler-specific settings for overriding sequences. These sequences are guaranteed to be representatives in the Nybbler output regardless of
-# whether there are earlier samples with equivalent sequence in the regular  "sequeces" file.
+# whether there are earlier samples with equivalent sequence in the regular "sequences" file.
 # overriding_sequences: "data/local_sequences.fasta"
 # overriding_metadata: "data/local_metadata.tsv"
 
@@ -35,7 +35,7 @@ mask:
   # The reference ID in the VCF must be retrievable from Genbank Nucleotide DB using NCBI Entrez e-utils.
   mask_sites_vcf: "https://github.com/W-L/ProblematicSites_SARS-CoV2/raw/master/subset_vcf/problematic_sites_sarsCov2.mask.vcf https://github.com/W-L/ProblematicSites_SARS-CoV2/raw/master/subset_vcf/problematic_sites_sarsCov2.caution.vcf"
 
-# The following is only requored to define the reference strain in the "sequences" file, if mask_sites_vcf above was not provided.
+# The following is only required to define the reference strain in the "sequences" file, if mask_sites_vcf above was not provided.
 refine:
   root: "Wuhan/Hu-1/2019 Wuhan/WH01/2019" 
 
