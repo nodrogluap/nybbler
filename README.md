@@ -12,7 +12,7 @@ $ git clone https://github.com/nodrogluap/nybbler
 $ cd nybbler
 ```
 
-This program is fairly simple but depends on [minimap2](https://github.com/lh3/minimap2) being in your path, as well as the Perl packages YAML::XS (for reading the config file) and File::Fetch (for downloading reference data).
+This program is fairly simple but depends on [minimap2](https://github.com/lh3/minimap2) being in your path, as well as the Perl packages YAML::XS (for reading the config file), File::Fetch (for downloading reference data), and Time::Piece (for metadata date parsing and manipulations).
 
 If you have these requirements already, you are good to go. If not, these requirements can be easily met with the included conda environment, with no administrator privileges required, like so:
 
