@@ -9,8 +9,8 @@ use strict;
 use warnings;
 use File::Basename;        # core
 use File::Temp 'tempdir';  # core
-use IPC::Open2;            # core
-use File::Fetch;           # core since Perl 5.3
+use Time::Piece;          
+use File::Fetch;           
 use YAML::XS 'LoadFile';   # typically via bioconda perl-yaml-libyaml
 use vars qw($genbank_id_placeholder $query_key_placeholder $webenv_placeholder $format_placeholder $genbank_eutils_search_uri $genbank_eutils_fetch_fasta_uri);
 
@@ -104,13 +104,172 @@ generate_titles(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2title);
 # Print the new metadata and sequence files
 my $redux_metadata_file = "$output_dir/".basename($nextstrain_config->{"metadata"});
 my $redux_sequence_file = "$output_dir/".basename($nextstrain_config->{"sequences"});
-print STDERR "Writing new metadata ($redux_metadata_file) and sequence ($redux_metadata_file)\n";
+print STDERR "Writing new metadata ($redux_metadata_file) and sequence ($redux_sequence_file)\n";
 write_new_combined_metadata($redux_metadata_file, \%id2title, $metadata_local, $nextstrain_config->{"metadata"});
 write_sequences(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2sequence, $jurisdiction_granularity_level, $redux_sequence_file);
 
 ###################################
 # subroutine definitions
 ###################################
+
+# Deals with incomplete dates, so not trivial. Since we treat month-only dates as occurring at the end of the month we take earlier fully defined
+# dates if they exist to define the range, and if no other viable option pick middle of the month to reduce length bias. 
+# Expects dates to be passed in chronologically ordered.
+sub diff_in_days{ 
+	my (@dates) = @_;
+	my $start_date; # don't mod since it's earlier than any other date anyways
+	my $prev_date;
+	my $i;
+	if($#dates < 1){
+		return (0, 0, 0); # No range
+	}
+	for($i = 0; $i < $#dates; $i++){
+                $start_date = complete_date($dates[$i]);
+                my ($year, $zero_pad, $month) = $start_date =~ /^(\d+)-(0?)(\d+)/;
+                if($start_date eq $dates[$i]){ # i.e. it was a fully specified date
+                        last;
+                }
+		# stop when you get to more months into the dates and haven't encountered a fully specified one yet
+		if(defined $prev_date){
+			my ($prev_year, $prev_month) = $prev_date =~ /^(\d+)-0?(\d+)/;
+			if($prev_year < $year or $prev_year == $year and $prev_month < $month){
+				$start_date = "$prev_year-$zero_pad$prev_month-".int(days_in($prev_year, $prev_month)/2);
+				$i--; # we used the previous date, so gotta rewind
+				last;
+			}
+		}
+		# Otherwise store data to make sure we don't undershoot the month or year observed
+		$prev_date = $start_date;
+        }
+	$i-- if $i == $#dates; # had no specific dates in the list so got to the for() end condition
+	my $end_date;
+	my $j;
+	for($j = $#dates; $j > $i; $j--){
+		# ignore end dates that are just a year
+		if($dates[$j] =~ /^\d+$/){
+			next;
+		}
+		$end_date = complete_date($dates[$j]);
+		my ($year, $zero_pad, $month) = $end_date =~ /^(\d+)-(0?)(\d+)/;
+		if($end_date eq $dates[$j]){ # i.e. it was a fully specified date
+			if(defined $prev_date){
+				# Implicitly, the previous date was not fully specified
+				my ($prev_year, $prev_month) = $prev_date =~ /^(\d+)-0?(\d+)/;
+				if($prev_year > $year or $prev_year == $year and $prev_month > $month){
+					# The incomplete date is in a later month than the latest specific data available,
+					# report the date difference to the middle of the month to reduce bias.
+					$end_date = "$prev_year-$zero_pad$prev_month-".int(days_in($prev_year, $prev_month)/2);
+					$j++;
+				}
+			}
+			last;
+		}
+		# Otherwise store data to make sure we don't undershoot the month or year observed
+		$prev_date = $end_date;
+	}
+	# The following should only happen if there is no option for an end date except the year alone. 
+	# Throw it into the zero-period bin rather than messing up the stats with some guess. 
+	if(not defined $end_date or $j == $i){
+		$end_date = $start_date;
+	}
+
+	# Handle the special case where all the dates are incomplete, so the start and end date are the same potentially but unspecific.
+	# The statistically most likely answer is half the month if we have no prior on persistence (or half-year, sometimes up to today).
+	elsif($dates[0] eq $dates[$#dates] and $dates[0] ne $start_date){
+		$end_date = complete_date($dates[$#dates]); # will be end-of-month vs middle-of-month in diff below
+	}
+	my $t2 = Time::Piece->strptime($end_date, "%Y-%m-%d"); # ISO 8601, perl does not support %F
+        my $t1 = Time::Piece->strptime($start_date, "%Y-%m-%d");
+
+	if($t2 < $t1){
+		warn "Got negative diff for ", complete_date($end_date), "($end_date,", $dates[$#dates], ") -> ", complete_date($start_date), "($start_date,", $dates[0], "): full time series ", join(" ", @dates), "\n";
+	}
+	return (int(($t2-$t1)/(60*60*24)), $i, $j); # seconds -> days
+}
+
+# YYYY-MM-DD Silently turns any future date into today, and assigns end-of-month or end-of-year to incomplete dates, fixes many invalid dates e.g. 2020-01-XX
+sub complete_date{ 
+	my ($date) = @_;
+	my $complete_date = ref $date ? join("-", @$date) : $date;
+	my $this_year = localtime->year;
+	my $this_month = localtime->mon;
+	my $this_day = localtime->day_of_month;
+	my $today = localtime->ymd; # ISO 8601
+	if(not defined $complete_date or $complete_date eq ""){
+		warn "Using today's date for blank date provided\n";
+		return $today;
+	}
+	elsif($complete_date =~ /^(\d{4})(-)?/){
+		my ($year, $more) = ($1, $2);
+		if(not defined $more){ # No month or day specified
+			if($year < $this_year){
+				$complete_date .= "-12";
+			}
+			else{ # Don't let it be a future date
+				#warn "Using today's date for $complete_date\n";
+				return $today;
+			}
+		}
+		elsif($year > $this_year){
+			warn "Future year for $complete_date\n";
+			return $today;
+		}
+	}
+	if($complete_date =~ /^(\d{4})-0?(\d+)$/){
+		my ($year, $month) = ($1, $2);
+		if($month > 12){
+			warn "Date $complete_date had invalid month $month, using 12 instead\n";
+			$month = 12;
+		}
+		if($year > $this_year or ($year == $this_year and $month >= $this_month)){ # future
+			warn "Date $complete_date has future month $month, using today's date instead\n";
+			return $today;
+		}
+		else{
+			$complete_date .= "-".days_in($year, $month);
+		}
+	}
+	if($complete_date =~ /^(\d{4})-0?(\d+)-0?(\d+|XX)$/){
+		my ($year, $month, $day) = ($1, $2, $3);
+		if($month > 12){
+                        warn "Date $complete_date had invalid month $month, using 12 instead\n";
+                        $month = 12;
+                }
+		my $days_in_month = days_in($year, $month);
+		if($day eq "XX"){
+			$day = $days_in_month;
+		}
+		elsif($day > $days_in_month){
+			warn "Date $year-$month-$day had invalid day $day, using $days_in_month instead\n";
+                        $day = $days_in_month;
+		}
+		if($year >= $this_year){
+			if($year > $this_year or $month > $this_month or ($month == $this_month and $day > $this_day)){ # future
+				warn "Date $complete_date is in the future, using today's date instead\n";
+                                return $today;
+                        }
+		}
+		# If we get to this point we should have a valid parseable ISO 8601 date in the past or present
+		return sprintf("%d-%02d-%02d", $year, $month, $day);
+	}
+	else{
+		warn "Could not parse date $complete_date, using today instead\n";
+		return $today;
+	}
+}
+
+sub days_in{
+	my ($year, $month) = @_;
+	if($month == 1 or $month == 3 or $month == 5 or $month == 7 or $month == 8 or $month == 10 or $month == 12){
+		return 31;
+	}
+	elsif($month == 2){
+		return ($year % 4 == 0 and ($year % 400 == 0 or $year % 100) ? 29 : 28);
+	}	
+	else{
+		return 30;
+	}
+}
 
 sub apply_includes_and_excludes{
 	my($key2earliest_id, $key2later_ids, $id2date, $jurisdiction_granularity_level, $nextstrain_config) = @_;
@@ -232,9 +391,12 @@ sub write_sequences{
 			$jurisdiction_instances = "instances=". scalar(@ids_by_date). " ";
 		}
 
-		print FASTA_OUT ">$id hash=\"$key\" date-range=\"\[", date2str($id2date, $ids_by_date[0]), ",", date2str($id2date, $ids_by_date[$#ids_by_date]), "\]\" ", 
+		my @dates = map {date2str($id2date, $_)} @ids_by_date;
+		my ($diff, $min_idx, $max_idx) = diff_in_days(@dates);
+		$ids_by_date[$max_idx] .= "*" if $#dates;
+		print FASTA_OUT ">$id hash=\"$key\" date-range=\"[$dates[0],",$dates[$#dates], "]\" days=$diff ", 
 				 $global_instances, $jurisdiction_instances, $jurisdiction_proportion, 
-                                 join(" ", grep {$_ ne $id} @ids_by_date), "\n", $id2sequence->{$id}, "\n";
+                                 join(" ", grep {$_ ne $id and $_ ne "$id*"} @ids_by_date), "\n", $id2sequence->{$id}, "\n";
 	}
 	close(FASTA_OUT);
 }
@@ -314,14 +476,15 @@ sub write_genbank_data_file{
 
 # Grabs the sequence record from local hash as per config YAML spec
 sub write_reference_strain_data_file{
-	my ($nextstrain_config, $id2sequence, $tmpdir) = @_;
+	my ($nextstrain_config, $id2sequence, $tmpdir, $output_id_ref) = @_;
 	if(not exists $nextstrain_config->{"refine"}->{"root"}){
 		die "No mask:mask_sites_vcf provided in the YAML config, please specify a fallback reference strain spec in the config as refine:root\n";
 	}
 	my $root_to_use;
 	for my $strain (split /\s+/, $nextstrain_config->{"refine"}->{"root"}){
 		if(exists $id2sequence{$strain}){
-			$root_to_use = $id2sequence{$strain};
+			print "Using reference strain $strain\n";
+			$root_to_use = $strain;
 			last;
 		}
 	}
@@ -333,6 +496,7 @@ sub write_reference_strain_data_file{
 	open(REF, ">$tmp_ref_fasta") or die "Cannot open $tmp_ref_fasta for writing: $!n";
 	print REF ">$root_to_use\n$id2sequence{$root_to_use}\n";
 	close(REF);
+	$$output_id_ref = $root_to_use;
 	return $tmp_ref_fasta;
 }
 
@@ -347,11 +511,12 @@ sub get_seqs_and_hashkeys{
 	# Set the reference based on the mask site VCF, or fallback to the NextStrain config.
 	my $tmpdir = tempdir( CLEANUP => 1 );
 	my $tmp_ref_fasta;
+	my $local_ref_id;
 	if(defined $genbank_reference_id){
 		$tmp_ref_fasta = &write_genbank_data_file($genbank_reference_id, $tmpdir, "fasta");
 	}
 	else{
-		$tmp_ref_fasta = &write_reference_strain_data_file($nextstrain_config, $id2sequence, $tmpdir);
+		$tmp_ref_fasta = &write_reference_strain_data_file($nextstrain_config, $id2sequence, $tmpdir, \$local_ref_id);
 	}
 
 	# Write the queries to a file to avoid open2 buffering issues.
@@ -380,7 +545,7 @@ sub get_seqs_and_hashkeys{
 		if(/^\@/){ # header
 			if(/^\@SQ\tSN:\S+\tLN:(\d+)/){
 				$reference_length = $1;
-				print "Reference length is $reference_length ($genbank_reference_id)\n";
+				print "Reference length is $reference_length (", (defined $genbank_reference_id ? $genbank_reference_id : $local_ref_id), ")\n";
 			}
 			next;
 		}
@@ -388,8 +553,11 @@ sub get_seqs_and_hashkeys{
 		my @F = split /\t/, $_;
 		# Pertinent columns are 1-4, 6, 10, second-to-last
 		# Run sanity checks first
-		if($F[2] ne  $genbank_reference_id){
-			die "Something is very wrong: reference in samtools output ($F[2]) was not expected value '$genbank_reference_id'\n";
+		if(defined $genbank_reference_id and $F[2] ne $genbank_reference_id){
+			die "Something is very wrong: reference in samtools output ($F[2]) was not expected value from GenBank '$genbank_reference_id'\n";
+		}
+		elsif(defined $local_ref_id and $F[2] ne $local_ref_id){
+			die "Something is very wrong: reference in samtools output ($F[2]) was not expected value from locally defined root strain '$local_ref_id'\n";
 		}
 		next unless $F[1] == 0; # samtools flags should be forward strand, primary, no pairing information
 		my $id = $F[0];
