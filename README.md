@@ -45,3 +45,19 @@ Nybbler is designed to be compatible with the [defaults/parameters.yaml](https:/
 
 ## Advanced usage
 
+## Troubleshooting
+
+Occasionally you will get an error message like below saying that something at the NCBI is not available. This is a transient bug in the NCBI e-utils availability, simply rerun the script and it should go away.
+
+```
+(nybbler) -bash-4.2$ ./nybbler minimum_config.yaml testoutdir
+Fetching masking site definitions
+Loading sequences and calculating keys
+Could not find QueryKey in results for NCBI E-Utils query https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&usehistory=y&term=MN908947.3[accn]
+Search response was:
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE eSearchResult PUBLIC "-//NLM//DTD esearch 20060628//EN" "https://eutils.ncbi.nlm.nih.gov/eutils/dtd/20060628/esearch.dtd">
+<eSearchResult>
+	<ERROR>Search Backend failed: Database is not supported: nuccore</ERROR>
+</eSearchResult>
+```
