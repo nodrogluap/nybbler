@@ -27,6 +27,7 @@ dependencies:
   - perl-module-metadata=1.000036=pl526_0
   - perl-params-check=0.38=pl526_1
   - perl-parent=0.236=pl526_1
+  - perl-time-piece=1.27=pl526_1
   - perl-version=0.9924=pl526_0
   - perl-yaml-libyaml=0.66=pl526_1
   - zlib=1.2.11=h7b6447c_3
