@@ -1,0 +1,2118 @@
+location,date,ideal_sequences
+Afghanistan,2019-12,NaN
+Algeria,2019-12,NaN
+Armenia,2019-12,NaN
+Australia,2019-12,NaN
+Austria,2019-12,NaN
+Azerbaijan,2019-12,NaN
+Bahrain,2019-12,NaN
+Belarus,2019-12,NaN
+Belgium,2019-12,NaN
+Brazil,2019-12,NaN
+Cambodia,2019-12,NaN
+Canada,2019-12,NaN
+China,2019-12,NaN
+Croatia,2019-12,NaN
+Czech Republic,2019-12,NaN
+Denmark,2019-12,NaN
+Dominican Republic,2019-12,NaN
+Ecuador,2019-12,NaN
+Egypt,2019-12,NaN
+Estonia,2019-12,NaN
+Finland,2019-12,NaN
+France,2019-12,NaN
+Georgia,2019-12,NaN
+Germany,2019-12,NaN
+Greece,2019-12,NaN
+Iceland,2019-12,NaN
+India,2019-12,NaN
+Indonesia,2019-12,NaN
+International,2019-12,NaN
+Iran,2019-12,NaN
+Iraq,2019-12,NaN
+Ireland,2019-12,NaN
+Israel,2019-12,NaN
+Italy,2019-12,NaN
+Japan,2019-12,NaN
+Kuwait,2019-12,NaN
+Lebanon,2019-12,NaN
+Lithuania,2019-12,NaN
+Luxembourg,2019-12,NaN
+Macedonia,2019-12,NaN
+Malaysia,2019-12,NaN
+Mexico,2019-12,NaN
+Monaco,2019-12,NaN
+Nepal,2019-12,NaN
+Netherlands,2019-12,NaN
+New Zealand,2019-12,NaN
+Nigeria,2019-12,NaN
+Norway,2019-12,NaN
+Oman,2019-12,NaN
+Pakistan,2019-12,NaN
+Philippines,2019-12,NaN
+Qatar,2019-12,NaN
+Romania,2019-12,NaN
+Russia,2019-12,NaN
+San Marino,2019-12,NaN
+Singapore,2019-12,NaN
+South Korea,2019-12,NaN
+Spain,2019-12,NaN
+Sri Lanka,2019-12,NaN
+Sweden,2019-12,NaN
+Switzerland,2019-12,NaN
+Taiwan,2019-12,NaN
+Thailand,2019-12,NaN
+United Arab Emirates,2019-12,NaN
+United Kingdom,2019-12,NaN
+United States,2019-12,NaN
+Vietnam,2019-12,NaN
+World,2019-12,NaN
+Afghanistan,2020-01,NaN
+Algeria,2020-01,NaN
+Armenia,2020-01,NaN
+Australia,2020-01,NaN
+Austria,2020-01,NaN
+Azerbaijan,2020-01,NaN
+Bahrain,2020-01,NaN
+Belarus,2020-01,NaN
+Belgium,2020-01,NaN
+Brazil,2020-01,NaN
+Cambodia,2020-01,NaN
+Canada,2020-01,NaN
+China,2020-01,NaN
+Croatia,2020-01,NaN
+Czech Republic,2020-01,NaN
+Denmark,2020-01,NaN
+Dominican Republic,2020-01,NaN
+Ecuador,2020-01,NaN
+Egypt,2020-01,NaN
+Estonia,2020-01,NaN
+Fiji,2020-01,NaN
+Finland,2020-01,NaN
+France,2020-01,NaN
+Georgia,2020-01,NaN
+Germany,2020-01,NaN
+Greece,2020-01,NaN
+Hong Kong,2020-01,NaN
+Iceland,2020-01,NaN
+India,2020-01,NaN
+Indonesia,2020-01,NaN
+International,2020-01,NaN
+Iran,2020-01,NaN
+Iraq,2020-01,NaN
+Ireland,2020-01,NaN
+Israel,2020-01,NaN
+Italy,2020-01,NaN
+Japan,2020-01,NaN
+Kuwait,2020-01,NaN
+Lebanon,2020-01,NaN
+Lithuania,2020-01,NaN
+Luxembourg,2020-01,NaN
+Macedonia,2020-01,NaN
+Malaysia,2020-01,NaN
+Mexico,2020-01,NaN
+Monaco,2020-01,NaN
+Nepal,2020-01,NaN
+Netherlands,2020-01,NaN
+New Zealand,2020-01,NaN
+Nigeria,2020-01,NaN
+Norway,2020-01,NaN
+Oman,2020-01,NaN
+Pakistan,2020-01,NaN
+Philippines,2020-01,NaN
+Qatar,2020-01,NaN
+Romania,2020-01,NaN
+Russia,2020-01,NaN
+San Marino,2020-01,NaN
+Singapore,2020-01,NaN
+South Korea,2020-01,NaN
+Spain,2020-01,NaN
+Sri Lanka,2020-01,NaN
+Sweden,2020-01,NaN
+Switzerland,2020-01,NaN
+Taiwan,2020-01,NaN
+Thailand,2020-01,NaN
+United Arab Emirates,2020-01,NaN
+United Kingdom,2020-01,NaN
+United States,2020-01,NaN
+Vietnam,2020-01,NaN
+World,2020-01,NaN
+Afghanistan,2020-02,1.0
+Algeria,2020-02,1.0
+Armenia,2020-02,1.0
+Australia,2020-02,1.0
+Austria,2020-02,1.0
+Azerbaijan,2020-02,1.0
+Bahrain,2020-02,1.0
+Belarus,2020-02,1.0
+Belgium,2020-02,1.0
+Brazil,2020-02,1.0
+Cambodia,2020-02,0.0
+Canada,2020-02,1.0
+China,2020-02,16.0
+Croatia,2020-02,1.0
+Czech Republic,2020-02,1.0
+Denmark,2020-02,1.0
+Dominican Republic,2020-02,1.0
+Ecuador,2020-02,2.0
+Egypt,2020-02,1.0
+Estonia,2020-02,1.0
+Fiji,2020-02,0.0
+Finland,2020-02,1.0
+France,2020-02,4.0
+Georgia,2020-02,1.0
+Germany,2020-02,1.0
+Greece,2020-02,1.0
+Guatemala,2020-02,1.0
+Hong Kong,2020-02,NaN
+Iceland,2020-02,1.0
+India,2020-02,1.0
+Indonesia,2020-02,1.0
+International,2020-02,0.0
+Iran,2020-02,22.0
+Iraq,2020-02,1.0
+Ireland,2020-02,1.0
+Israel,2020-02,1.0
+Italy,2020-02,19.0
+Japan,2020-02,1.0
+Kuwait,2020-02,1.0
+Latvia,2020-02,1.0
+Lebanon,2020-02,1.0
+Lithuania,2020-02,1.0
+Luxembourg,2020-02,1.0
+Macedonia,2020-02,1.0
+Malaysia,2020-02,1.0
+Malta,2020-02,1.0
+Mexico,2020-02,1.0
+Monaco,2020-02,0.0
+Morocco,2020-02,1.0
+Nepal,2020-02,1.0
+Netherlands,2020-02,1.0
+New Zealand,2020-02,1.0
+Nigeria,2020-02,1.0
+Norway,2020-02,1.0
+Oman,2020-02,1.0
+Pakistan,2020-02,1.0
+Philippines,2020-02,1.0
+Portugal,2020-02,1.0
+Qatar,2020-02,1.0
+Romania,2020-02,1.0
+Russia,2020-02,1.0
+San Marino,2020-02,1.0
+Senegal,2020-02,1.0
+Serbia,2020-02,1.0
+Singapore,2020-02,1.0
+Slovenia,2020-02,1.0
+South Africa,2020-02,1.0
+South Korea,2020-02,1.0
+Spain,2020-02,9.0
+Sri Lanka,2020-02,1.0
+Sweden,2020-02,1.0
+Switzerland,2020-02,1.0
+Taiwan,2020-02,1.0
+Thailand,2020-02,1.0
+United Arab Emirates,2020-02,1.0
+United Kingdom,2020-02,1.0
+United States,2020-02,3.0
+Vietnam,2020-02,1.0
+World,2020-02,79.0
+Afghanistan,2020-03,2.0
+Albania,2020-03,1.0
+Algeria,2020-03,9.0
+Andorra,2020-03,1.0
+Angola,2020-03,1.0
+Anguilla,2020-03,NaN
+Antigua and Barbuda,2020-03,0.0
+Argentina,2020-03,2.0
+Armenia,2020-03,1.0
+Aruba,2020-03,NaN
+Australia,2020-03,1.0
+Austria,2020-03,4.0
+Azerbaijan,2020-03,1.0
+Bahamas,2020-03,1.0
+Bahrain,2020-03,1.0
+Bangladesh,2020-03,2.0
+Barbados,2020-03,1.0
+Belarus,2020-03,1.0
+Belgium,2020-03,41.0
+Belize,2020-03,0.0
+Benin,2020-03,1.0
+Bermuda,2020-03,NaN
+Bhutan,2020-03,0.0
+Bolivia,2020-03,1.0
+Bosnia and Herzegovina,2020-03,1.0
+Brazil,2020-03,37.0
+British Virgin Islands,2020-03,NaN
+Brunei,2020-03,0.0
+Bulgaria,2020-03,1.0
+Burkina Faso,2020-03,2.0
+Cambodia,2020-03,0.0
+Cameroon,2020-03,2.0
+Canada,2020-03,13.0
+Cape Verde,2020-03,1.0
+Cayman Islands,2020-03,NaN
+Central African Republic,2020-03,1.0
+Chad,2020-03,1.0
+Chile,2020-03,3.0
+China,2020-03,2.0
+Colombia,2020-03,3.0
+Congo,2020-03,1.0
+Costa Rica,2020-03,1.0
+Cote d'Ivoire,2020-03,1.0
+Croatia,2020-03,1.0
+Cuba,2020-03,1.0
+Curacao,2020-03,NaN
+Cyprus,2020-03,1.0
+Czech Republic,2020-03,2.0
+Democratic Republic of Congo,2020-03,2.0
+Denmark,2020-03,3.0
+Djibouti,2020-03,1.0
+Dominica,2020-03,0.0
+Dominican Republic,2020-03,5.0
+Ecuador,2020-03,167.0
+Egypt,2020-03,7.0
+El Salvador,2020-03,1.0
+Equatorial Guinea,2020-03,1.0
+Eritrea,2020-03,0.0
+Estonia,2020-03,1.0
+Ethiopia,2020-03,1.0
+Faeroe Islands,2020-03,NaN
+Fiji,2020-03,0.0
+Finland,2020-03,1.0
+France,2020-03,123.0
+French Polynesia,2020-03,NaN
+Gabon,2020-03,1.0
+Gambia,2020-03,1.0
+Georgia,2020-03,1.0
+Germany,2020-03,28.0
+Ghana,2020-03,1.0
+Gibraltar,2020-03,NaN
+Greece,2020-03,1.0
+Greenland,2020-03,NaN
+Grenada,2020-03,0.0
+Guam,2020-03,1.0
+Guatemala,2020-03,1.0
+Guernsey,2020-03,NaN
+Guinea,2020-03,1.0
+Guinea-Bissau,2020-03,1.0
+Guyana,2020-03,1.0
+Haiti,2020-03,1.0
+Honduras,2020-03,2.0
+Hong Kong,2020-03,NaN
+Hungary,2020-03,2.0
+Iceland,2020-03,1.0
+India,2020-03,14.0
+Indonesia,2020-03,13.0
+International,2020-03,0.0
+Iran,2020-03,82.0
+Iraq,2020-03,3.0
+Ireland,2020-03,8.0
+Isle of Man,2020-03,NaN
+Israel,2020-03,3.0
+Italy,2020-03,125.0
+Jamaica,2020-03,1.0
+Japan,2020-03,1.0
+Jersey,2020-03,NaN
+Jordan,2020-03,1.0
+Kazakhstan,2020-03,1.0
+Kenya,2020-03,1.0
+Kosovo,2020-03,0.0
+Kuwait,2020-03,1.0
+Kyrgyzstan,2020-03,1.0
+Laos,2020-03,0.0
+Latvia,2020-03,1.0
+Lebanon,2020-03,1.0
+Liberia,2020-03,1.0
+Libya,2020-03,1.0
+Liechtenstein,2020-03,0.0
+Lithuania,2020-03,1.0
+Luxembourg,2020-03,1.0
+Macedonia,2020-03,1.0
+Madagascar,2020-03,1.0
+Malawi,2020-03,1.0
+Malaysia,2020-03,2.0
+Maldives,2020-03,1.0
+Mali,2020-03,1.0
+Malta,2020-03,1.0
+Mauritania,2020-03,1.0
+Mauritius,2020-03,1.0
+Mexico,2020-03,13.0
+Moldova,2020-03,1.0
+Monaco,2020-03,0.0
+Mongolia,2020-03,0.0
+Montenegro,2020-03,1.0
+Montserrat,2020-03,NaN
+Morocco,2020-03,3.0
+Mozambique,2020-03,1.0
+Myanmar,2020-03,1.0
+Namibia,2020-03,1.0
+Nepal,2020-03,1.0
+Netherlands,2020-03,29.0
+New Caledonia,2020-03,NaN
+New Zealand,2020-03,1.0
+Nicaragua,2020-03,1.0
+Niger,2020-03,2.0
+Nigeria,2020-03,1.0
+Northern Mariana Islands,2020-03,NaN
+Norway,2020-03,2.0
+Oman,2020-03,1.0
+Pakistan,2020-03,7.0
+Palestine,2020-03,1.0
+Panama,2020-03,2.0
+Papua New Guinea,2020-03,0.0
+Paraguay,2020-03,1.0
+Peru,2020-03,9.0
+Philippines,2020-03,16.0
+Poland,2020-03,4.0
+Portugal,2020-03,5.0
+Puerto Rico,2020-03,1.0
+Qatar,2020-03,1.0
+Romania,2020-03,4.0
+Russia,2020-03,4.0
+Rwanda,2020-03,1.0
+Saint Kitts and Nevis,2020-03,0.0
+Saint Lucia,2020-03,0.0
+Saint Vincent and the Grenadines,2020-03,0.0
+San Marino,2020-03,1.0
+Saudi Arabia,2020-03,4.0
+Senegal,2020-03,1.0
+Serbia,2020-03,2.0
+Seychelles,2020-03,0.0
+Singapore,2020-03,1.0
+Sint Maarten (Dutch part),2020-03,NaN
+Slovakia,2020-03,1.0
+Slovenia,2020-03,1.0
+Somalia,2020-03,1.0
+South Africa,2020-03,2.0
+South Korea,2020-03,2.0
+Spain,2020-03,171.0
+Sri Lanka,2020-03,1.0
+Sudan,2020-03,1.0
+Suriname,2020-03,1.0
+Swaziland,2020-03,1.0
+Sweden,2020-03,15.0
+Switzerland,2020-03,10.0
+Syria,2020-03,1.0
+Taiwan,2020-03,1.0
+Tanzania,2020-03,0.0
+Thailand,2020-03,1.0
+Timor,2020-03,0.0
+Togo,2020-03,1.0
+Trinidad and Tobago,2020-03,1.0
+Tunisia,2020-03,1.0
+Turkey,2020-03,31.0
+Turks and Caicos Islands,2020-03,NaN
+Uganda,2020-03,1.0
+Ukraine,2020-03,2.0
+United Arab Emirates,2020-03,2.0
+United Kingdom,2020-03,187.0
+United States,2020-03,344.0
+United States Virgin Islands,2020-03,1.0
+Uruguay,2020-03,1.0
+Uzbekistan,2020-03,1.0
+Vatican,2020-03,0.0
+Venezuela,2020-03,1.0
+Vietnam,2020-03,1.0
+World,2020-03,1576.0
+Zambia,2020-03,1.0
+Zimbabwe,2020-03,1.0
+Afghanistan,2020-04,9.0
+Albania,2020-04,1.0
+Algeria,2020-04,5.0
+Andorra,2020-04,1.0
+Angola,2020-04,1.0
+Anguilla,2020-04,NaN
+Antigua and Barbuda,2020-04,0.0
+Argentina,2020-04,5.0
+Armenia,2020-04,1.0
+Aruba,2020-04,NaN
+Australia,2020-04,1.0
+Austria,2020-04,2.0
+Azerbaijan,2020-04,1.0
+Bahamas,2020-04,1.0
+Bahrain,2020-04,1.0
+Bangladesh,2020-04,7.0
+Barbados,2020-04,1.0
+Belarus,2020-04,2.0
+Belgium,2020-04,30.0
+Belize,2020-04,0.0
+Benin,2020-04,1.0
+Bermuda,2020-04,NaN
+Bhutan,2020-04,0.0
+Bolivia,2020-04,6.0
+Bonaire Sint Eustatius and Saba,2020-04,NaN
+Bosnia and Herzegovina,2020-04,1.0
+Botswana,2020-04,0.0
+Brazil,2020-04,277.0
+British Virgin Islands,2020-04,NaN
+Brunei,2020-04,0.0
+Bulgaria,2020-04,1.0
+Burkina Faso,2020-04,1.0
+Burundi,2020-04,0.0
+Cambodia,2020-04,0.0
+Cameroon,2020-04,6.0
+Canada,2020-04,41.0
+Cape Verde,2020-04,1.0
+Cayman Islands,2020-04,NaN
+Central African Republic,2020-04,1.0
+Chad,2020-04,4.0
+Chile,2020-04,8.0
+China,2020-04,1.0
+Colombia,2020-04,7.0
+Congo,2020-04,1.0
+Costa Rica,2020-04,1.0
+Cote d'Ivoire,2020-04,1.0
+Croatia,2020-04,1.0
+Cuba,2020-04,1.0
+Curacao,2020-04,NaN
+Cyprus,2020-04,1.0
+Czech Republic,2020-04,1.0
+Democratic Republic of Congo,2020-04,2.0
+Denmark,2020-04,2.0
+Djibouti,2020-04,1.0
+Dominica,2020-04,0.0
+Dominican Republic,2020-04,5.0
+Ecuador,2020-04,67.0
+Egypt,2020-04,14.0
+El Salvador,2020-04,1.0
+Equatorial Guinea,2020-04,1.0
+Eritrea,2020-04,0.0
+Estonia,2020-04,1.0
+Ethiopia,2020-04,1.0
+Faeroe Islands,2020-04,NaN
+Falkland Islands,2020-04,NaN
+Fiji,2020-04,0.0
+Finland,2020-04,2.0
+France,2020-04,61.0
+French Polynesia,2020-04,NaN
+Gabon,2020-04,1.0
+Gambia,2020-04,1.0
+Georgia,2020-04,1.0
+Germany,2020-04,29.0
+Ghana,2020-04,1.0
+Gibraltar,2020-04,NaN
+Greece,2020-04,1.0
+Greenland,2020-04,NaN
+Grenada,2020-04,0.0
+Guam,2020-04,1.0
+Guatemala,2020-04,2.0
+Guernsey,2020-04,NaN
+Guinea,2020-04,1.0
+Guinea-Bissau,2020-04,1.0
+Guyana,2020-04,1.0
+Haiti,2020-04,1.0
+Honduras,2020-04,4.0
+Hong Kong,2020-04,NaN
+Hungary,2020-04,3.0
+Iceland,2020-04,1.0
+India,2020-04,72.0
+Indonesia,2020-04,17.0
+International,2020-04,0.0
+Iran,2020-04,44.0
+Iraq,2020-04,2.0
+Ireland,2020-04,10.0
+Isle of Man,2020-04,NaN
+Israel,2020-04,2.0
+Italy,2020-04,55.0
+Jamaica,2020-04,1.0
+Japan,2020-04,4.0
+Jersey,2020-04,NaN
+Jordan,2020-04,1.0
+Kazakhstan,2020-04,1.0
+Kenya,2020-04,2.0
+Kosovo,2020-04,0.0
+Kuwait,2020-04,4.0
+Kyrgyzstan,2020-04,1.0
+Laos,2020-04,0.0
+Latvia,2020-04,1.0
+Lebanon,2020-04,1.0
+Liberia,2020-04,1.0
+Libya,2020-04,1.0
+Liechtenstein,2020-04,0.0
+Lithuania,2020-04,1.0
+Luxembourg,2020-04,1.0
+Macedonia,2020-04,1.0
+Madagascar,2020-04,1.0
+Malawi,2020-04,1.0
+Malaysia,2020-04,1.0
+Maldives,2020-04,1.0
+Mali,2020-04,2.0
+Malta,2020-04,1.0
+Mauritania,2020-04,1.0
+Mauritius,2020-04,1.0
+Mexico,2020-04,103.0
+Moldova,2020-04,2.0
+Monaco,2020-04,0.0
+Mongolia,2020-04,0.0
+Montenegro,2020-04,1.0
+Montserrat,2020-04,NaN
+Morocco,2020-04,2.0
+Mozambique,2020-04,1.0
+Myanmar,2020-04,1.0
+Namibia,2020-04,1.0
+Nepal,2020-04,1.0
+Netherlands,2020-04,19.0
+New Caledonia,2020-04,NaN
+New Zealand,2020-04,1.0
+Nicaragua,2020-04,1.0
+Niger,2020-04,3.0
+Nigeria,2020-04,9.0
+Northern Mariana Islands,2020-04,NaN
+Norway,2020-04,1.0
+Oman,2020-04,1.0
+Pakistan,2020-04,36.0
+Palestine,2020-04,1.0
+Panama,2020-04,3.0
+Papua New Guinea,2020-04,0.0
+Paraguay,2020-04,1.0
+Peru,2020-04,113.0
+Philippines,2020-04,19.0
+Poland,2020-04,6.0
+Portugal,2020-04,4.0
+Puerto Rico,2020-04,1.0
+Qatar,2020-04,1.0
+Romania,2020-04,6.0
+Russia,2020-04,27.0
+Rwanda,2020-04,1.0
+Saint Kitts and Nevis,2020-04,0.0
+Saint Lucia,2020-04,0.0
+Saint Vincent and the Grenadines,2020-04,0.0
+San Marino,2020-04,1.0
+Sao Tome and Principe,2020-04,1.0
+Saudi Arabia,2020-04,9.0
+Senegal,2020-04,1.0
+Serbia,2020-04,2.0
+Seychelles,2020-04,0.0
+Sierra Leone,2020-04,2.0
+Singapore,2020-04,1.0
+Sint Maarten (Dutch part),2020-04,NaN
+Slovakia,2020-04,1.0
+Slovenia,2020-04,1.0
+Somalia,2020-04,4.0
+South Africa,2020-04,7.0
+South Korea,2020-04,1.0
+South Sudan,2020-04,1.0
+Spain,2020-04,65.0
+Sri Lanka,2020-04,1.0
+Sudan,2020-04,6.0
+Suriname,2020-04,1.0
+Swaziland,2020-04,1.0
+Sweden,2020-04,17.0
+Switzerland,2020-04,3.0
+Syria,2020-04,1.0
+Taiwan,2020-04,1.0
+Tanzania,2020-04,0.0
+Thailand,2020-04,1.0
+Timor,2020-04,0.0
+Togo,2020-04,1.0
+Trinidad and Tobago,2020-04,1.0
+Tunisia,2020-04,1.0
+Turkey,2020-04,37.0
+Turks and Caicos Islands,2020-04,NaN
+Uganda,2020-04,1.0
+Ukraine,2020-04,4.0
+United Arab Emirates,2020-04,8.0
+United Kingdom,2020-04,212.0
+United States,2020-04,487.0
+United States Virgin Islands,2020-04,1.0
+Uruguay,2020-04,1.0
+Uzbekistan,2020-04,1.0
+Vatican,2020-04,0.0
+Venezuela,2020-04,1.0
+Vietnam,2020-04,1.0
+Western Sahara,2020-04,0.0
+World,2020-04,2024.0
+Yemen,2020-04,2.0
+Zambia,2020-04,1.0
+Zimbabwe,2020-04,1.0
+Afghanistan,2020-05,24.0
+Albania,2020-05,1.0
+Algeria,2020-05,7.0
+Andorra,2020-05,1.0
+Angola,2020-05,1.0
+Anguilla,2020-05,NaN
+Antigua and Barbuda,2020-05,0.0
+Argentina,2020-05,11.0
+Armenia,2020-05,4.0
+Aruba,2020-05,NaN
+Australia,2020-05,1.0
+Austria,2020-05,1.0
+Azerbaijan,2020-05,3.0
+Bahamas,2020-05,1.0
+Bahrain,2020-05,2.0
+Bangladesh,2020-05,26.0
+Barbados,2020-05,1.0
+Belarus,2020-05,2.0
+Belgium,2020-05,6.0
+Belize,2020-05,0.0
+Benin,2020-05,1.0
+Bermuda,2020-05,NaN
+Bhutan,2020-05,0.0
+Bolivia,2020-05,19.0
+Bonaire Sint Eustatius and Saba,2020-05,NaN
+Bosnia and Herzegovina,2020-05,1.0
+Botswana,2020-05,0.0
+Brazil,2020-05,577.0
+British Virgin Islands,2020-05,NaN
+Brunei,2020-05,0.0
+Bulgaria,2020-05,1.0
+Burkina Faso,2020-05,1.0
+Burundi,2020-05,0.0
+Cambodia,2020-05,0.0
+Cameroon,2020-05,7.0
+Canada,2020-05,22.0
+Cape Verde,2020-05,1.0
+Cayman Islands,2020-05,NaN
+Central African Republic,2020-05,2.0
+Chad,2020-05,2.0
+Chile,2020-05,52.0
+China,2020-05,1.0
+Colombia,2020-05,23.0
+Comoros,2020-05,1.0
+Congo,2020-05,1.0
+Costa Rica,2020-05,1.0
+Cote d'Ivoire,2020-05,2.0
+Croatia,2020-05,1.0
+Cuba,2020-05,1.0
+Curacao,2020-05,NaN
+Cyprus,2020-05,1.0
+Czech Republic,2020-05,1.0
+Democratic Republic of Congo,2020-05,4.0
+Denmark,2020-05,1.0
+Djibouti,2020-05,2.0
+Dominica,2020-05,0.0
+Dominican Republic,2020-05,5.0
+Ecuador,2020-05,40.0
+Egypt,2020-05,43.0
+El Salvador,2020-05,2.0
+Equatorial Guinea,2020-05,2.0
+Eritrea,2020-05,0.0
+Estonia,2020-05,1.0
+Ethiopia,2020-05,4.0
+Faeroe Islands,2020-05,NaN
+Falkland Islands,2020-05,NaN
+Fiji,2020-05,0.0
+Finland,2020-05,1.0
+France,2020-05,18.0
+French Polynesia,2020-05,NaN
+Gabon,2020-05,1.0
+Gambia,2020-05,1.0
+Georgia,2020-05,1.0
+Germany,2020-05,7.0
+Ghana,2020-05,2.0
+Gibraltar,2020-05,NaN
+Greece,2020-05,1.0
+Greenland,2020-05,NaN
+Grenada,2020-05,0.0
+Guam,2020-05,1.0
+Guatemala,2020-05,14.0
+Guernsey,2020-05,NaN
+Guinea,2020-05,1.0
+Guinea-Bissau,2020-05,1.0
+Guyana,2020-05,1.0
+Haiti,2020-05,3.0
+Honduras,2020-05,7.0
+Hong Kong,2020-05,NaN
+Hungary,2020-05,1.0
+Iceland,2020-05,1.0
+India,2020-05,229.0
+Indonesia,2020-05,32.0
+International,2020-05,0.0
+Iran,2020-05,52.0
+Iraq,2020-05,29.0
+Ireland,2020-05,2.0
+Isle of Man,2020-05,NaN
+Israel,2020-05,1.0
+Italy,2020-05,17.0
+Jamaica,2020-05,1.0
+Japan,2020-05,2.0
+Jersey,2020-05,NaN
+Jordan,2020-05,1.0
+Kazakhstan,2020-05,3.0
+Kenya,2020-05,4.0
+Kosovo,2020-05,0.0
+Kuwait,2020-05,7.0
+Kyrgyzstan,2020-05,2.0
+Laos,2020-05,0.0
+Latvia,2020-05,1.0
+Lebanon,2020-05,1.0
+Lesotho,2020-05,0.0
+Liberia,2020-05,1.0
+Libya,2020-05,1.0
+Liechtenstein,2020-05,0.0
+Lithuania,2020-05,1.0
+Luxembourg,2020-05,1.0
+Macedonia,2020-05,2.0
+Madagascar,2020-05,1.0
+Malawi,2020-05,1.0
+Malaysia,2020-05,1.0
+Maldives,2020-05,1.0
+Mali,2020-05,3.0
+Malta,2020-05,1.0
+Mauritania,2020-05,4.0
+Mauritius,2020-05,1.0
+Mexico,2020-05,309.0
+Moldova,2020-05,3.0
+Monaco,2020-05,0.0
+Mongolia,2020-05,0.0
+Montenegro,2020-05,1.0
+Montserrat,2020-05,NaN
+Morocco,2020-05,1.0
+Mozambique,2020-05,1.0
+Myanmar,2020-05,1.0
+Namibia,2020-05,1.0
+Nepal,2020-05,1.0
+Netherlands,2020-05,4.0
+New Caledonia,2020-05,NaN
+New Zealand,2020-05,1.0
+Nicaragua,2020-05,2.0
+Niger,2020-05,1.0
+Nigeria,2020-05,15.0
+Northern Mariana Islands,2020-05,NaN
+Norway,2020-05,1.0
+Oman,2020-05,5.0
+Pakistan,2020-05,107.0
+Palestine,2020-05,1.0
+Panama,2020-05,4.0
+Papua New Guinea,2020-05,0.0
+Paraguay,2020-05,1.0
+Peru,2020-05,194.0
+Philippines,2020-05,15.0
+Poland,2020-05,4.0
+Portugal,2020-05,3.0
+Puerto Rico,2020-05,1.0
+Qatar,2020-05,4.0
+Romania,2020-05,4.0
+Russia,2020-05,56.0
+Rwanda,2020-05,1.0
+Saint Kitts and Nevis,2020-05,0.0
+Saint Lucia,2020-05,0.0
+Saint Vincent and the Grenadines,2020-05,0.0
+San Marino,2020-05,1.0
+Sao Tome and Principe,2020-05,1.0
+Saudi Arabia,2020-05,34.0
+Senegal,2020-05,2.0
+Serbia,2020-05,1.0
+Seychelles,2020-05,0.0
+Sierra Leone,2020-05,1.0
+Singapore,2020-05,1.0
+Sint Maarten (Dutch part),2020-05,NaN
+Slovakia,2020-05,1.0
+Slovenia,2020-05,1.0
+Somalia,2020-05,3.0
+South Africa,2020-05,37.0
+South Korea,2020-05,1.0
+South Sudan,2020-05,2.0
+Spain,2020-05,12.0
+Sri Lanka,2020-05,1.0
+Sudan,2020-05,23.0
+Suriname,2020-05,1.0
+Swaziland,2020-05,1.0
+Sweden,2020-05,10.0
+Switzerland,2020-05,1.0
+Syria,2020-05,1.0
+Taiwan,2020-05,1.0
+Tajikistan,2020-05,1.0
+Tanzania,2020-05,0.0
+Thailand,2020-05,1.0
+Timor,2020-05,0.0
+Togo,2020-05,1.0
+Trinidad and Tobago,2020-05,1.0
+Tunisia,2020-05,1.0
+Turkey,2020-05,14.0
+Turks and Caicos Islands,2020-05,NaN
+Uganda,2020-05,1.0
+Ukraine,2020-05,5.0
+United Arab Emirates,2020-05,4.0
+United Kingdom,2020-05,69.0
+United States,2020-05,273.0
+United States Virgin Islands,2020-05,1.0
+Uruguay,2020-05,1.0
+Uzbekistan,2020-05,1.0
+Vatican,2020-05,0.0
+Venezuela,2020-05,1.0
+Vietnam,2020-05,1.0
+Western Sahara,2020-05,0.0
+World,2020-05,2541.0
+Yemen,2020-05,11.0
+Zambia,2020-05,1.0
+Zimbabwe,2020-05,1.0
+Afghanistan,2020-06,43.0
+Albania,2020-06,1.0
+Algeria,2020-06,8.0
+Andorra,2020-06,1.0
+Angola,2020-06,2.0
+Anguilla,2020-06,NaN
+Antigua and Barbuda,2020-06,0.0
+Argentina,2020-06,26.0
+Armenia,2020-06,5.0
+Aruba,2020-06,NaN
+Australia,2020-06,1.0
+Austria,2020-06,1.0
+Azerbaijan,2020-06,6.0
+Bahamas,2020-06,1.0
+Bahrain,2020-06,3.0
+Bangladesh,2020-06,35.0
+Barbados,2020-06,1.0
+Belarus,2020-06,2.0
+Belgium,2020-06,2.0
+Belize,2020-06,0.0
+Benin,2020-06,2.0
+Bermuda,2020-06,NaN
+Bhutan,2020-06,0.0
+Bolivia,2020-06,56.0
+Bonaire Sint Eustatius and Saba,2020-06,NaN
+Bosnia and Herzegovina,2020-06,1.0
+Botswana,2020-06,0.0
+Brazil,2020-06,603.0
+British Virgin Islands,2020-06,NaN
+Brunei,2020-06,0.0
+Bulgaria,2020-06,2.0
+Burkina Faso,2020-06,1.0
+Burundi,2020-06,0.0
+Cambodia,2020-06,0.0
+Cameroon,2020-06,5.0
+Canada,2020-06,6.0
+Cape Verde,2020-06,1.0
+Cayman Islands,2020-06,NaN
+Central African Republic,2020-06,3.0
+Chad,2020-06,1.0
+Chile,2020-06,61.0
+China,2020-06,1.0
+Colombia,2020-06,80.0
+Comoros,2020-06,1.0
+Congo,2020-06,1.0
+Costa Rica,2020-06,1.0
+Cote d'Ivoire,2020-06,3.0
+Croatia,2020-06,1.0
+Cuba,2020-06,1.0
+Curacao,2020-06,NaN
+Cyprus,2020-06,1.0
+Czech Republic,2020-06,1.0
+Democratic Republic of Congo,2020-06,5.0
+Denmark,2020-06,1.0
+Djibouti,2020-06,1.0
+Dominica,2020-06,0.0
+Dominican Republic,2020-06,8.0
+Ecuador,2020-06,51.0
+Egypt,2020-06,82.0
+El Salvador,2020-06,5.0
+Equatorial Guinea,2020-06,3.0
+Eritrea,2020-06,0.0
+Estonia,2020-06,1.0
+Ethiopia,2020-06,6.0
+Faeroe Islands,2020-06,NaN
+Falkland Islands,2020-06,NaN
+Fiji,2020-06,0.0
+Finland,2020-06,1.0
+France,2020-06,6.0
+French Polynesia,2020-06,NaN
+Gabon,2020-06,1.0
+Gambia,2020-06,1.0
+Georgia,2020-06,1.0
+Germany,2020-06,2.0
+Ghana,2020-06,4.0
+Gibraltar,2020-06,NaN
+Greece,2020-06,1.0
+Greenland,2020-06,NaN
+Grenada,2020-06,0.0
+Guam,2020-06,1.0
+Guatemala,2020-06,34.0
+Guernsey,2020-06,NaN
+Guinea,2020-06,1.0
+Guinea-Bissau,2020-06,1.0
+Guyana,2020-06,1.0
+Haiti,2020-06,3.0
+Honduras,2020-06,21.0
+Hong Kong,2020-06,NaN
+Hungary,2020-06,1.0
+Iceland,2020-06,1.0
+India,2020-06,378.0
+Indonesia,2020-06,52.0
+International,2020-06,0.0
+Iran,2020-06,117.0
+Iraq,2020-06,117.0
+Ireland,2020-06,1.0
+Isle of Man,2020-06,NaN
+Israel,2020-06,2.0
+Italy,2020-06,5.0
+Jamaica,2020-06,1.0
+Japan,2020-06,1.0
+Jersey,2020-06,NaN
+Jordan,2020-06,1.0
+Kazakhstan,2020-06,42.0
+Kenya,2020-06,6.0
+Kosovo,2020-06,0.0
+Kuwait,2020-06,4.0
+Kyrgyzstan,2020-06,19.0
+Laos,2020-06,0.0
+Latvia,2020-06,1.0
+Lebanon,2020-06,1.0
+Lesotho,2020-06,0.0
+Liberia,2020-06,2.0
+Libya,2020-06,1.0
+Liechtenstein,2020-06,0.0
+Lithuania,2020-06,1.0
+Luxembourg,2020-06,1.0
+Macedonia,2020-06,4.0
+Madagascar,2020-06,3.0
+Malawi,2020-06,3.0
+Malaysia,2020-06,1.0
+Maldives,2020-06,1.0
+Mali,2020-06,1.0
+Malta,2020-06,1.0
+Mauritania,2020-06,3.0
+Mauritius,2020-06,1.0
+Mexico,2020-06,408.0
+Moldova,2020-06,4.0
+Monaco,2020-06,0.0
+Mongolia,2020-06,0.0
+Montenegro,2020-06,1.0
+Montserrat,2020-06,NaN
+Morocco,2020-06,2.0
+Mozambique,2020-06,1.0
+Myanmar,2020-06,1.0
+Namibia,2020-06,1.0
+Nepal,2020-06,1.0
+Netherlands,2020-06,1.0
+New Caledonia,2020-06,NaN
+New Zealand,2020-06,1.0
+Nicaragua,2020-06,2.0
+Niger,2020-06,1.0
+Nigeria,2020-06,18.0
+Northern Mariana Islands,2020-06,NaN
+Norway,2020-06,1.0
+Oman,2020-06,11.0
+Pakistan,2020-06,116.0
+Palestine,2020-06,3.0
+Panama,2020-06,12.0
+Papua New Guinea,2020-06,0.0
+Paraguay,2020-06,1.0
+Peru,2020-06,188.0
+Philippines,2020-06,12.0
+Poland,2020-06,4.0
+Portugal,2020-06,2.0
+Puerto Rico,2020-06,1.0
+Qatar,2020-06,4.0
+Romania,2020-06,6.0
+Russia,2020-06,57.0
+Rwanda,2020-06,1.0
+Saint Kitts and Nevis,2020-06,0.0
+Saint Lucia,2020-06,0.0
+Saint Vincent and the Grenadines,2020-06,0.0
+San Marino,2020-06,1.0
+Sao Tome and Principe,2020-06,1.0
+Saudi Arabia,2020-06,58.0
+Senegal,2020-06,5.0
+Serbia,2020-06,3.0
+Seychelles,2020-06,0.0
+Sierra Leone,2020-06,1.0
+Singapore,2020-06,1.0
+Sint Maarten (Dutch part),2020-06,NaN
+Slovakia,2020-06,1.0
+Slovenia,2020-06,1.0
+Somalia,2020-06,1.0
+South Africa,2020-06,89.0
+South Korea,2020-06,1.0
+South Sudan,2020-06,1.0
+Spain,2020-06,3.0
+Sri Lanka,2020-06,1.0
+Sudan,2020-06,12.0
+Suriname,2020-06,1.0
+Swaziland,2020-06,1.0
+Sweden,2020-06,5.0
+Switzerland,2020-06,1.0
+Syria,2020-06,1.0
+Taiwan,2020-06,1.0
+Tajikistan,2020-06,1.0
+Tanzania,2020-06,0.0
+Thailand,2020-06,1.0
+Timor,2020-06,0.0
+Togo,2020-06,1.0
+Trinidad and Tobago,2020-06,1.0
+Tunisia,2020-06,1.0
+Turkey,2020-06,11.0
+Turks and Caicos Islands,2020-06,NaN
+Uganda,2020-06,1.0
+Ukraine,2020-06,7.0
+United Arab Emirates,2020-06,2.0
+United Kingdom,2020-06,21.0
+United States,2020-06,205.0
+United States Virgin Islands,2020-06,1.0
+Uruguay,2020-06,1.0
+Uzbekistan,2020-06,3.0
+Vatican,2020-06,0.0
+Venezuela,2020-06,2.0
+Vietnam,2020-06,1.0
+Western Sahara,2020-06,0.0
+World,2020-06,3214.0
+Yemen,2020-06,12.0
+Zambia,2020-06,6.0
+Zimbabwe,2020-06,1.0
+Afghanistan,2020-07,17.0
+Albania,2020-07,2.0
+Algeria,2020-07,10.0
+Andorra,2020-07,1.0
+Angola,2020-07,5.0
+Anguilla,2020-07,NaN
+Antigua and Barbuda,2020-07,0.0
+Argentina,2020-07,81.0
+Armenia,2020-07,4.0
+Aruba,2020-07,NaN
+Australia,2020-07,5.0
+Austria,2020-07,1.0
+Azerbaijan,2020-07,5.0
+Bahamas,2020-07,1.0
+Bahrain,2020-07,2.0
+Bangladesh,2020-07,34.0
+Barbados,2020-07,1.0
+Belarus,2020-07,2.0
+Belgium,2020-07,2.0
+Belize,2020-07,0.0
+Benin,2020-07,1.0
+Bermuda,2020-07,NaN
+Bhutan,2020-07,0.0
+Bolivia,2020-07,87.0
+Bonaire Sint Eustatius and Saba,2020-07,NaN
+Bosnia and Herzegovina,2020-07,4.0
+Botswana,2020-07,0.0
+Brazil,2020-07,640.0
+British Virgin Islands,2020-07,NaN
+Brunei,2020-07,0.0
+Bulgaria,2020-07,3.0
+Burkina Faso,2020-07,1.0
+Burundi,2020-07,0.0
+Cambodia,2020-07,0.0
+Cameroon,2020-07,2.0
+Canada,2020-07,3.0
+Cape Verde,2020-07,1.0
+Cayman Islands,2020-07,NaN
+Central African Republic,2020-07,1.0
+Chad,2020-07,1.0
+Chile,2020-07,35.0
+China,2020-07,1.0
+Colombia,2020-07,171.0
+Comoros,2020-07,1.0
+Congo,2020-07,2.0
+Costa Rica,2020-07,5.0
+Cote d'Ivoire,2020-07,2.0
+Croatia,2020-07,1.0
+Cuba,2020-07,1.0
+Curacao,2020-07,NaN
+Cyprus,2020-07,1.0
+Czech Republic,2020-07,1.0
+Democratic Republic of Congo,2020-07,4.0
+Denmark,2020-07,1.0
+Djibouti,2020-07,1.0
+Dominica,2020-07,0.0
+Dominican Republic,2020-07,14.0
+Ecuador,2020-07,67.0
+Egypt,2020-07,36.0
+El Salvador,2020-07,7.0
+Equatorial Guinea,2020-07,1.0
+Eritrea,2020-07,0.0
+Estonia,2020-07,1.0
+Ethiopia,2020-07,26.0
+Faeroe Islands,2020-07,NaN
+Falkland Islands,2020-07,NaN
+Fiji,2020-07,0.0
+Finland,2020-07,1.0
+France,2020-07,5.0
+French Polynesia,2020-07,NaN
+Gabon,2020-07,1.0
+Gambia,2020-07,4.0
+Georgia,2020-07,1.0
+Germany,2020-07,2.0
+Ghana,2020-07,5.0
+Gibraltar,2020-07,NaN
+Greece,2020-07,1.0
+Greenland,2020-07,NaN
+Grenada,2020-07,0.0
+Guam,2020-07,1.0
+Guatemala,2020-07,37.0
+Guernsey,2020-07,NaN
+Guinea,2020-07,1.0
+Guinea-Bissau,2020-07,1.0
+Guyana,2020-07,1.0
+Haiti,2020-07,3.0
+Honduras,2020-07,27.0
+Hong Kong,2020-07,NaN
+Hungary,2020-07,1.0
+Iceland,2020-07,1.0
+India,2020-07,699.0
+Indonesia,2020-07,69.0
+International,2020-07,0.0
+Iran,2020-07,155.0
+Iraq,2020-07,102.0
+Ireland,2020-07,1.0
+Isle of Man,2020-07,NaN
+Israel,2020-07,6.0
+Italy,2020-07,2.0
+Jamaica,2020-07,1.0
+Japan,2020-07,1.0
+Jersey,2020-07,NaN
+Jordan,2020-07,1.0
+Kazakhstan,2020-07,37.0
+Kenya,2020-07,16.0
+Kosovo,2020-07,0.0
+Kuwait,2020-07,4.0
+Kyrgyzstan,2020-07,13.0
+Laos,2020-07,0.0
+Latvia,2020-07,1.0
+Lebanon,2020-07,2.0
+Lesotho,2020-07,0.0
+Liberia,2020-07,1.0
+Libya,2020-07,4.0
+Liechtenstein,2020-07,0.0
+Lithuania,2020-07,1.0
+Luxembourg,2020-07,1.0
+Macedonia,2020-07,3.0
+Madagascar,2020-07,8.0
+Malawi,2020-07,7.0
+Malaysia,2020-07,1.0
+Maldives,2020-07,1.0
+Mali,2020-07,1.0
+Malta,2020-07,1.0
+Mauritania,2020-07,1.0
+Mauritius,2020-07,1.0
+Mexico,2020-07,459.0
+Moldova,2020-07,4.0
+Monaco,2020-07,0.0
+Mongolia,2020-07,0.0
+Montenegro,2020-07,1.0
+Montserrat,2020-07,NaN
+Morocco,2020-07,13.0
+Mozambique,2020-07,1.0
+Myanmar,2020-07,1.0
+Namibia,2020-07,2.0
+Nepal,2020-07,3.0
+Netherlands,2020-07,1.0
+New Caledonia,2020-07,NaN
+New Zealand,2020-07,1.0
+Nicaragua,2020-07,1.0
+Niger,2020-07,1.0
+Nigeria,2020-07,13.0
+Northern Mariana Islands,2020-07,NaN
+Norway,2020-07,1.0
+Oman,2020-07,17.0
+Pakistan,2020-07,35.0
+Palestine,2020-07,3.0
+Panama,2020-07,16.0
+Papua New Guinea,2020-07,0.0
+Paraguay,2020-07,4.0
+Peru,2020-07,228.0
+Philippines,2020-07,36.0
+Poland,2020-07,4.0
+Portugal,2020-07,1.0
+Puerto Rico,2020-07,2.0
+Qatar,2020-07,3.0
+Romania,2020-07,11.0
+Russia,2020-07,48.0
+Rwanda,2020-07,1.0
+Saint Kitts and Nevis,2020-07,0.0
+Saint Lucia,2020-07,0.0
+Saint Vincent and the Grenadines,2020-07,0.0
+San Marino,2020-07,1.0
+Sao Tome and Principe,2020-07,1.0
+Saudi Arabia,2020-07,48.0
+Senegal,2020-07,5.0
+Serbia,2020-07,3.0
+Seychelles,2020-07,0.0
+Sierra Leone,2020-07,1.0
+Singapore,2020-07,1.0
+Sint Maarten (Dutch part),2020-07,NaN
+Slovakia,2020-07,1.0
+Slovenia,2020-07,1.0
+Somalia,2020-07,1.0
+South Africa,2020-07,207.0
+South Korea,2020-07,1.0
+South Sudan,2020-07,1.0
+Spain,2020-07,7.0
+Sri Lanka,2020-07,1.0
+Sudan,2020-07,9.0
+Suriname,2020-07,1.0
+Swaziland,2020-07,3.0
+Sweden,2020-07,1.0
+Switzerland,2020-07,1.0
+Syria,2020-07,2.0
+Taiwan,2020-07,1.0
+Tajikistan,2020-07,1.0
+Tanzania,2020-07,0.0
+Thailand,2020-07,1.0
+Timor,2020-07,0.0
+Togo,2020-07,1.0
+Trinidad and Tobago,2020-07,1.0
+Tunisia,2020-07,1.0
+Turkey,2020-07,11.0
+Turks and Caicos Islands,2020-07,NaN
+Uganda,2020-07,2.0
+Ukraine,2020-07,9.0
+United Arab Emirates,2020-07,2.0
+United Kingdom,2020-07,9.0
+United States,2020-07,374.0
+United States Virgin Islands,2020-07,1.0
+Uruguay,2020-07,1.0
+Uzbekistan,2020-07,8.0
+Vatican,2020-07,0.0
+Venezuela,2020-07,4.0
+Vietnam,2020-07,1.0
+Western Sahara,2020-07,0.0
+World,2020-07,4094.0
+Yemen,2020-07,6.0
+Zambia,2020-07,11.0
+Zimbabwe,2020-07,7.0
+Afghanistan,2020-08,5.0
+Albania,2020-08,2.0
+Algeria,2020-08,9.0
+Andorra,2020-08,1.0
+Angola,2020-08,5.0
+Anguilla,2020-08,NaN
+Antigua and Barbuda,2020-08,0.0
+Argentina,2020-08,143.0
+Armenia,2020-08,2.0
+Aruba,2020-08,NaN
+Australia,2020-08,5.0
+Austria,2020-08,1.0
+Azerbaijan,2020-08,2.0
+Bahamas,2020-08,2.0
+Bahrain,2020-08,2.0
+Bangladesh,2020-08,36.0
+Barbados,2020-08,1.0
+Belarus,2020-08,3.0
+Belgium,2020-08,2.0
+Belize,2020-08,0.0
+Benin,2020-08,1.0
+Bermuda,2020-08,NaN
+Bhutan,2020-08,0.0
+Bolivia,2020-08,72.0
+Bonaire Sint Eustatius and Saba,2020-08,NaN
+Bosnia and Herzegovina,2020-08,3.0
+Botswana,2020-08,0.0
+Brazil,2020-08,530.0
+British Virgin Islands,2020-08,NaN
+Brunei,2020-08,0.0
+Bulgaria,2020-08,3.0
+Burkina Faso,2020-08,1.0
+Burundi,2020-08,0.0
+Cambodia,2020-08,0.0
+Cameroon,2020-08,1.0
+Canada,2020-08,2.0
+Cape Verde,2020-08,1.0
+Cayman Islands,2020-08,NaN
+Central African Republic,2020-08,1.0
+Chad,2020-08,1.0
+Chile,2020-08,27.0
+China,2020-08,1.0
+Colombia,2020-08,160.0
+Comoros,2020-08,1.0
+Congo,2020-08,1.0
+Costa Rica,2020-08,8.0
+Cote d'Ivoire,2020-08,1.0
+Croatia,2020-08,1.0
+Cuba,2020-08,1.0
+Curacao,2020-08,NaN
+Cyprus,2020-08,1.0
+Czech Republic,2020-08,1.0
+Democratic Republic of Congo,2020-08,2.0
+Denmark,2020-08,1.0
+Djibouti,2020-08,1.0
+Dominica,2020-08,0.0
+Dominican Republic,2020-08,15.0
+Ecuador,2020-08,42.0
+Egypt,2020-08,22.0
+El Salvador,2020-08,4.0
+Equatorial Guinea,2020-08,1.0
+Eritrea,2020-08,0.0
+Estonia,2020-08,1.0
+Ethiopia,2020-08,33.0
+Faeroe Islands,2020-08,NaN
+Falkland Islands,2020-08,NaN
+Fiji,2020-08,0.0
+Finland,2020-08,1.0
+France,2020-08,9.0
+French Polynesia,2020-08,NaN
+Gabon,2020-08,1.0
+Gambia,2020-08,2.0
+Georgia,2020-08,1.0
+Germany,2020-08,2.0
+Ghana,2020-08,3.0
+Gibraltar,2020-08,NaN
+Greece,2020-08,1.0
+Greenland,2020-08,NaN
+Grenada,2020-08,0.0
+Guam,2020-08,1.0
+Guatemala,2020-08,24.0
+Guernsey,2020-08,NaN
+Guinea,2020-08,1.0
+Guinea-Bissau,2020-08,1.0
+Guyana,2020-08,2.0
+Haiti,2020-08,2.0
+Honduras,2020-08,22.0
+Hong Kong,2020-08,NaN
+Hungary,2020-08,1.0
+Iceland,2020-08,1.0
+India,2020-08,929.0
+Indonesia,2020-08,100.0
+International,2020-08,0.0
+Iran,2020-08,111.0
+Iraq,2020-08,108.0
+Ireland,2020-08,1.0
+Isle of Man,2020-08,NaN
+Israel,2020-08,8.0
+Italy,2020-08,3.0
+Jamaica,2020-08,1.0
+Japan,2020-08,3.0
+Jersey,2020-08,NaN
+Jordan,2020-08,1.0
+Kazakhstan,2020-08,6.0
+Kenya,2020-08,9.0
+Kosovo,2020-08,0.0
+Kuwait,2020-08,3.0
+Kyrgyzstan,2020-08,1.0
+Laos,2020-08,0.0
+Latvia,2020-08,1.0
+Lebanon,2020-08,4.0
+Lesotho,2020-08,0.0
+Liberia,2020-08,1.0
+Libya,2020-08,8.0
+Liechtenstein,2020-08,0.0
+Lithuania,2020-08,1.0
+Luxembourg,2020-08,1.0
+Macedonia,2020-08,3.0
+Madagascar,2020-08,4.0
+Malawi,2020-08,1.0
+Malaysia,2020-08,1.0
+Maldives,2020-08,1.0
+Mali,2020-08,1.0
+Malta,2020-08,1.0
+Mauritania,2020-08,1.0
+Mauritius,2020-08,1.0
+Mexico,2020-08,366.0
+Moldova,2020-08,4.0
+Monaco,2020-08,0.0
+Mongolia,2020-08,0.0
+Montenegro,2020-08,1.0
+Montserrat,2020-08,NaN
+Morocco,2020-08,31.0
+Mozambique,2020-08,2.0
+Myanmar,2020-08,2.0
+Namibia,2020-08,3.0
+Nepal,2020-08,10.0
+Netherlands,2020-08,2.0
+New Caledonia,2020-08,NaN
+New Zealand,2020-08,1.0
+Nicaragua,2020-08,1.0
+Niger,2020-08,1.0
+Nigeria,2020-08,6.0
+Northern Mariana Islands,2020-08,NaN
+Norway,2020-08,1.0
+Oman,2020-08,11.0
+Pakistan,2020-08,13.0
+Palestine,2020-08,7.0
+Panama,2020-08,10.0
+Papua New Guinea,2020-08,0.0
+Paraguay,2020-08,14.0
+Peru,2020-08,130.0
+Philippines,2020-08,71.0
+Poland,2020-08,5.0
+Portugal,2020-08,2.0
+Puerto Rico,2020-08,3.0
+Qatar,2020-08,2.0
+Romania,2020-08,14.0
+Russia,2020-08,45.0
+Rwanda,2020-08,1.0
+Saint Kitts and Nevis,2020-08,0.0
+Saint Lucia,2020-08,0.0
+Saint Vincent and the Grenadines,2020-08,0.0
+San Marino,2020-08,1.0
+Sao Tome and Principe,2020-08,1.0
+Saudi Arabia,2020-08,47.0
+Senegal,2020-08,3.0
+Serbia,2020-08,1.0
+Seychelles,2020-08,0.0
+Sierra Leone,2020-08,1.0
+Singapore,2020-08,1.0
+Sint Maarten (Dutch part),2020-08,NaN
+Slovakia,2020-08,1.0
+Slovenia,2020-08,1.0
+Somalia,2020-08,1.0
+South Africa,2020-08,109.0
+South Korea,2020-08,2.0
+South Sudan,2020-08,1.0
+Spain,2020-08,23.0
+Sri Lanka,2020-08,1.0
+Sudan,2020-08,3.0
+Suriname,2020-08,2.0
+Swaziland,2020-08,2.0
+Sweden,2020-08,1.0
+Switzerland,2020-08,1.0
+Syria,2020-08,3.0
+Taiwan,2020-08,1.0
+Tajikistan,2020-08,1.0
+Tanzania,2020-08,0.0
+Thailand,2020-08,1.0
+Timor,2020-08,0.0
+Togo,2020-08,1.0
+Trinidad and Tobago,2020-08,1.0
+Tunisia,2020-08,2.0
+Turkey,2020-08,30.0
+Turks and Caicos Islands,2020-08,NaN
+Uganda,2020-08,4.0
+Ukraine,2020-08,18.0
+United Arab Emirates,2020-08,2.0
+United Kingdom,2020-08,6.0
+United States,2020-08,322.0
+United States Virgin Islands,2020-08,1.0
+Uruguay,2020-08,1.0
+Uzbekistan,2020-08,9.0
+Vatican,2020-08,0.0
+Venezuela,2020-08,6.0
+Vietnam,2020-08,1.0
+Western Sahara,2020-08,0.0
+World,2020-08,3851.0
+Yemen,2020-08,3.0
+Zambia,2020-08,4.0
+Zimbabwe,2020-08,5.0
+Afghanistan,2020-09,5.0
+Albania,2020-09,2.0
+Algeria,2020-09,7.0
+Andorra,2020-09,1.0
+Angola,2020-09,8.0
+Anguilla,2020-09,NaN
+Antigua and Barbuda,2020-09,0.0
+Argentina,2020-09,208.0
+Armenia,2020-09,3.0
+Aruba,2020-09,NaN
+Australia,2020-09,1.0
+Austria,2020-09,2.0
+Azerbaijan,2020-09,2.0
+Bahamas,2020-09,2.0
+Bahrain,2020-09,3.0
+Bangladesh,2020-09,25.0
+Barbados,2020-09,1.0
+Belarus,2020-09,3.0
+Belgium,2020-09,5.0
+Belize,2020-09,0.0
+Benin,2020-09,1.0
+Bermuda,2020-09,NaN
+Bhutan,2020-09,0.0
+Bolivia,2020-09,32.0
+Bonaire Sint Eustatius and Saba,2020-09,NaN
+Bosnia and Herzegovina,2020-09,4.0
+Botswana,2020-09,0.0
+Brazil,2020-09,387.0
+British Virgin Islands,2020-09,NaN
+Brunei,2020-09,0.0
+Bulgaria,2020-09,3.0
+Burkina Faso,2020-09,1.0
+Burundi,2020-09,0.0
+Cambodia,2020-09,0.0
+Cameroon,2020-09,1.0
+Canada,2020-09,5.0
+Cape Verde,2020-09,2.0
+Cayman Islands,2020-09,NaN
+Central African Republic,2020-09,1.0
+Chad,2020-09,1.0
+Chile,2020-09,25.0
+China,2020-09,1.0
+Colombia,2020-09,100.0
+Comoros,2020-09,1.0
+Congo,2020-09,1.0
+Costa Rica,2020-09,9.0
+Cote d'Ivoire,2020-09,1.0
+Croatia,2020-09,2.0
+Cuba,2020-09,1.0
+Curacao,2020-09,NaN
+Cyprus,2020-09,1.0
+Czech Republic,2020-09,11.0
+Democratic Republic of Congo,2020-09,1.0
+Denmark,2020-09,1.0
+Djibouti,2020-09,1.0
+Dominica,2020-09,0.0
+Dominican Republic,2020-09,5.0
+Ecuador,2020-09,21.0
+Egypt,2020-09,16.0
+El Salvador,2020-09,3.0
+Equatorial Guinea,2020-09,1.0
+Eritrea,2020-09,0.0
+Estonia,2020-09,1.0
+Ethiopia,2020-09,19.0
+Faeroe Islands,2020-09,NaN
+Falkland Islands,2020-09,NaN
+Fiji,2020-09,0.0
+Finland,2020-09,1.0
+France,2020-09,29.0
+French Polynesia,2020-09,NaN
+Gabon,2020-09,1.0
+Gambia,2020-09,1.0
+Georgia,2020-09,2.0
+Germany,2020-09,4.0
+Ghana,2020-09,1.0
+Gibraltar,2020-09,NaN
+Greece,2020-09,2.0
+Greenland,2020-09,NaN
+Grenada,2020-09,0.0
+Guam,2020-09,1.0
+Guatemala,2020-09,17.0
+Guernsey,2020-09,NaN
+Guinea,2020-09,1.0
+Guinea-Bissau,2020-09,1.0
+Guyana,2020-09,2.0
+Haiti,2020-09,1.0
+Honduras,2020-09,17.0
+Hong Kong,2020-09,NaN
+Hungary,2020-09,6.0
+Iceland,2020-09,1.0
+India,2020-09,843.0
+Indonesia,2020-09,105.0
+International,2020-09,0.0
+Iran,2020-09,179.0
+Iraq,2020-09,86.0
+Ireland,2020-09,1.0
+Isle of Man,2020-09,NaN
+Israel,2020-09,18.0
+Italy,2020-09,8.0
+Jamaica,2020-09,3.0
+Japan,2020-09,2.0
+Jersey,2020-09,NaN
+Jordan,2020-09,15.0
+Kazakhstan,2020-09,3.0
+Kenya,2020-09,11.0
+Kosovo,2020-09,0.0
+Kuwait,2020-09,5.0
+Kyrgyzstan,2020-09,2.0
+Laos,2020-09,0.0
+Latvia,2020-09,1.0
+Lebanon,2020-09,6.0
+Lesotho,2020-09,0.0
+Liberia,2020-09,1.0
+Libya,2020-09,10.0
+Liechtenstein,2020-09,0.0
+Lithuania,2020-09,1.0
+Luxembourg,2020-09,1.0
+Macedonia,2020-09,3.0
+Madagascar,2020-09,2.0
+Malawi,2020-09,1.0
+Malaysia,2020-09,2.0
+Maldives,2020-09,1.0
+Mali,2020-09,1.0
+Malta,2020-09,1.0
+Mauritania,2020-09,1.0
+Mauritius,2020-09,1.0
+Mexico,2020-09,278.0
+Moldova,2020-09,6.0
+Monaco,2020-09,0.0
+Mongolia,2020-09,0.0
+Montenegro,2020-09,2.0
+Montserrat,2020-09,NaN
+Morocco,2020-09,35.0
+Mozambique,2020-09,3.0
+Myanmar,2020-09,26.0
+Namibia,2020-09,1.0
+Nepal,2020-09,13.0
+Netherlands,2020-09,5.0
+New Caledonia,2020-09,NaN
+New Zealand,2020-09,1.0
+Nicaragua,2020-09,1.0
+Niger,2020-09,1.0
+Nigeria,2020-09,2.0
+Northern Mariana Islands,2020-09,NaN
+Norway,2020-09,1.0
+Oman,2020-09,12.0
+Pakistan,2020-09,14.0
+Palestine,2020-09,9.0
+Panama,2020-09,8.0
+Papua New Guinea,2020-09,0.0
+Paraguay,2020-09,17.0
+Peru,2020-09,37.0
+Philippines,2020-09,69.0
+Poland,2020-09,16.0
+Portugal,2020-09,3.0
+Puerto Rico,2020-09,2.0
+Qatar,2020-09,1.0
+Romania,2020-09,17.0
+Russia,2020-09,69.0
+Rwanda,2020-09,1.0
+Saint Kitts and Nevis,2020-09,0.0
+Saint Lucia,2020-09,0.0
+Saint Vincent and the Grenadines,2020-09,0.0
+San Marino,2020-09,1.0
+Sao Tome and Principe,2020-09,1.0
+Saudi Arabia,2020-09,38.0
+Senegal,2020-09,1.0
+Serbia,2020-09,1.0
+Seychelles,2020-09,0.0
+Sierra Leone,2020-09,1.0
+Singapore,2020-09,1.0
+Sint Maarten (Dutch part),2020-09,NaN
+Slovakia,2020-09,1.0
+Slovenia,2020-09,1.0
+Somalia,2020-09,1.0
+South Africa,2020-09,79.0
+South Korea,2020-09,1.0
+South Sudan,2020-09,1.0
+Spain,2020-09,39.0
+Sri Lanka,2020-09,1.0
+Sudan,2020-09,1.0
+Suriname,2020-09,1.0
+Swaziland,2020-09,1.0
+Sweden,2020-09,1.0
+Switzerland,2020-09,1.0
+Syria,2020-09,3.0
+Taiwan,2020-09,1.0
+Tajikistan,2020-09,1.0
+Tanzania,2020-09,0.0
+Thailand,2020-09,1.0
+Timor,2020-09,0.0
+Togo,2020-09,1.0
+Trinidad and Tobago,2020-09,1.0
+Tunisia,2020-09,9.0
+Turkey,2020-09,41.0
+Turks and Caicos Islands,2020-09,NaN
+Uganda,2020-09,3.0
+Ukraine,2020-09,29.0
+United Arab Emirates,2020-09,4.0
+United Kingdom,2020-09,24.0
+United States,2020-09,258.0
+United States Virgin Islands,2020-09,1.0
+Uruguay,2020-09,1.0
+Uzbekistan,2020-09,6.0
+Vatican,2020-09,0.0
+Venezuela,2020-09,5.0
+Vietnam,2020-09,1.0
+Western Sahara,2020-09,0.0
+World,2020-09,3479.0
+Yemen,2020-09,1.0
+Zambia,2020-09,2.0
+Zimbabwe,2020-09,1.0
+Afghanistan,2020-10,11.0
+Albania,2020-10,4.0
+Algeria,2020-10,12.0
+Andorra,2020-10,1.0
+Angola,2020-10,7.0
+Anguilla,2020-10,NaN
+Antigua and Barbuda,2020-10,0.0
+Argentina,2020-10,183.0
+Armenia,2020-10,13.0
+Aruba,2020-10,NaN
+Australia,2020-10,1.0
+Austria,2020-10,12.0
+Azerbaijan,2020-10,12.0
+Bahamas,2020-10,1.0
+Bahrain,2020-10,2.0
+Bangladesh,2020-10,20.0
+Barbados,2020-10,1.0
+Belarus,2020-10,2.0
+Belgium,2020-10,45.0
+Belize,2020-10,0.0
+Benin,2020-10,1.0
+Bermuda,2020-10,NaN
+Bhutan,2020-10,0.0
+Bolivia,2020-10,14.0
+Bonaire Sint Eustatius and Saba,2020-10,NaN
+Bosnia and Herzegovina,2020-10,14.0
+Botswana,2020-10,0.0
+Brazil,2020-10,256.0
+British Virgin Islands,2020-10,NaN
+Brunei,2020-10,0.0
+Bulgaria,2020-10,16.0
+Burkina Faso,2020-10,1.0
+Burundi,2020-10,0.0
+Cambodia,2020-10,0.0
+Cameroon,2020-10,1.0
+Canada,2020-10,16.0
+Cape Verde,2020-10,1.0
+Cayman Islands,2020-10,NaN
+Central African Republic,2020-10,1.0
+Chad,2020-10,1.0
+Chile,2020-10,22.0
+China,2020-10,1.0
+Colombia,2020-10,108.0
+Comoros,2020-10,1.0
+Congo,2020-10,1.0
+Costa Rica,2020-10,8.0
+Cote d'Ivoire,2020-10,1.0
+Croatia,2020-10,9.0
+Cuba,2020-10,1.0
+Curacao,2020-10,NaN
+Cyprus,2020-10,1.0
+Czech Republic,2020-10,60.0
+Democratic Republic of Congo,2020-10,2.0
+Denmark,2020-10,1.0
+Djibouti,2020-10,1.0
+Dominica,2020-10,0.0
+Dominican Republic,2020-10,3.0
+Ecuador,2020-10,18.0
+Egypt,2020-10,16.0
+El Salvador,2020-10,4.0
+Equatorial Guinea,2020-10,1.0
+Eritrea,2020-10,0.0
+Estonia,2020-10,1.0
+Ethiopia,2020-10,16.0
+Faeroe Islands,2020-10,NaN
+Falkland Islands,2020-10,NaN
+Fiji,2020-10,0.0
+Finland,2020-10,1.0
+France,2020-10,138.0
+French Polynesia,2020-10,NaN
+Gabon,2020-10,1.0
+Gambia,2020-10,1.0
+Georgia,2020-10,9.0
+Germany,2020-10,29.0
+Ghana,2020-10,1.0
+Gibraltar,2020-10,NaN
+Greece,2020-10,7.0
+Greenland,2020-10,NaN
+Grenada,2020-10,0.0
+Guam,2020-10,1.0
+Guatemala,2020-10,15.0
+Guernsey,2020-10,NaN
+Guinea,2020-10,1.0
+Guinea-Bissau,2020-10,1.0
+Guyana,2020-10,1.0
+Haiti,2020-10,1.0
+Honduras,2020-10,12.0
+Hong Kong,2020-10,NaN
+Hungary,2020-10,25.0
+Iceland,2020-10,1.0
+India,2020-10,505.0
+Indonesia,2020-10,98.0
+International,2020-10,0.0
+Iran,2020-10,349.0
+Iraq,2020-10,74.0
+Ireland,2020-10,3.0
+Isle of Man,2020-10,NaN
+Israel,2020-10,10.0
+Italy,2020-10,86.0
+Jamaica,2020-10,2.0
+Japan,2020-10,3.0
+Jersey,2020-10,NaN
+Jordan,2020-10,72.0
+Kazakhstan,2020-10,6.0
+Kenya,2020-10,30.0
+Kosovo,2020-10,0.0
+Kuwait,2020-10,6.0
+Kyrgyzstan,2020-10,4.0
+Laos,2020-10,0.0
+Latvia,2020-10,1.0
+Lebanon,2020-10,8.0
+Lesotho,2020-10,0.0
+Liberia,2020-10,1.0
+Libya,2020-10,11.0
+Liechtenstein,2020-10,0.0
+Lithuania,2020-10,2.0
+Luxembourg,2020-10,2.0
+Macedonia,2020-10,10.0
+Madagascar,2020-10,1.0
+Malawi,2020-10,1.0
+Malaysia,2020-10,5.0
+Maldives,2020-10,1.0
+Mali,2020-10,1.0
+Malta,2020-10,1.0
+Marshall Islands,2020-10,0.0
+Mauritania,2020-10,1.0
+Mauritius,2020-10,1.0
+Mexico,2020-10,320.0
+Moldova,2020-10,7.0
+Monaco,2020-10,0.0
+Mongolia,2020-10,0.0
+Montenegro,2020-10,3.0
+Montserrat,2020-10,NaN
+Morocco,2020-10,64.0
+Mozambique,2020-10,3.0
+Myanmar,2020-10,24.0
+Namibia,2020-10,1.0
+Nepal,2020-10,15.0
+Netherlands,2020-10,21.0
+New Caledonia,2020-10,NaN
+New Zealand,2020-10,1.0
+Nicaragua,2020-10,1.0
+Niger,2020-10,1.0
+Nigeria,2020-10,3.0
+Northern Mariana Islands,2020-10,NaN
+Norway,2020-10,1.0
+Oman,2020-10,10.0
+Pakistan,2020-10,34.0
+Palestine,2020-10,9.0
+Panama,2020-10,8.0
+Papua New Guinea,2020-10,0.0
+Paraguay,2020-10,12.0
+Peru,2020-10,12.0
+Philippines,2020-10,53.0
+Poland,2020-10,93.0
+Portugal,2020-10,14.0
+Puerto Rico,2020-10,2.0
+Qatar,2020-10,1.0
+Romania,2020-10,39.0
+Russia,2020-10,137.0
+Rwanda,2020-10,1.0
+Saint Kitts and Nevis,2020-10,0.0
+Saint Lucia,2020-10,0.0
+Saint Vincent and the Grenadines,2020-10,0.0
+San Marino,2020-10,1.0
+Sao Tome and Principe,2020-10,1.0
+Saudi Arabia,2020-10,26.0
+Senegal,2020-10,1.0
+Serbia,2020-10,4.0
+Seychelles,2020-10,0.0
+Sierra Leone,2020-10,1.0
+Singapore,2020-10,1.0
+Sint Maarten (Dutch part),2020-10,NaN
+Slovakia,2020-10,6.0
+Slovenia,2020-10,7.0
+Solomon Islands,2020-10,0.0
+Somalia,2020-10,1.0
+South Africa,2020-10,61.0
+South Korea,2020-10,1.0
+South Sudan,2020-10,1.0
+Spain,2020-10,74.0
+Sri Lanka,2020-10,2.0
+Sudan,2020-10,1.0
+Suriname,2020-10,1.0
+Swaziland,2020-10,1.0
+Sweden,2020-10,5.0
+Switzerland,2020-10,14.0
+Syria,2020-10,4.0
+Taiwan,2020-10,1.0
+Tajikistan,2020-10,1.0
+Tanzania,2020-10,0.0
+Thailand,2020-10,1.0
+Timor,2020-10,0.0
+Togo,2020-10,1.0
+Trinidad and Tobago,2020-10,1.0
+Tunisia,2020-10,25.0
+Turkey,2020-10,53.0
+Turks and Caicos Islands,2020-10,NaN
+Uganda,2020-10,5.0
+Ukraine,2020-10,62.0
+United Arab Emirates,2020-10,4.0
+United Kingdom,2020-10,101.0
+United States,2020-10,359.0
+United States Virgin Islands,2020-10,1.0
+Uruguay,2020-10,1.0
+Uzbekistan,2020-10,4.0
+Vatican,2020-10,0.0
+Venezuela,2020-10,3.0
+Vietnam,2020-10,1.0
+Wallis and Futuna,2020-10,NaN
+Western Sahara,2020-10,0.0
+World,2020-10,4147.0
+Yemen,2020-10,1.0
+Zambia,2020-10,1.0
+Zimbabwe,2020-10,2.0
+Afghanistan,2020-11,NaN
+Albania,2020-11,NaN
+Algeria,2020-11,NaN
+Andorra,2020-11,NaN
+Angola,2020-11,NaN
+Anguilla,2020-11,NaN
+Antigua and Barbuda,2020-11,NaN
+Argentina,2020-11,NaN
+Armenia,2020-11,NaN
+Aruba,2020-11,NaN
+Australia,2020-11,NaN
+Austria,2020-11,NaN
+Azerbaijan,2020-11,NaN
+Bahamas,2020-11,NaN
+Bahrain,2020-11,NaN
+Bangladesh,2020-11,NaN
+Barbados,2020-11,NaN
+Belarus,2020-11,NaN
+Belgium,2020-11,NaN
+Belize,2020-11,NaN
+Benin,2020-11,NaN
+Bermuda,2020-11,NaN
+Bhutan,2020-11,NaN
+Bolivia,2020-11,NaN
+Bonaire Sint Eustatius and Saba,2020-11,NaN
+Bosnia and Herzegovina,2020-11,NaN
+Botswana,2020-11,NaN
+Brazil,2020-11,NaN
+British Virgin Islands,2020-11,NaN
+Brunei,2020-11,NaN
+Bulgaria,2020-11,NaN
+Burkina Faso,2020-11,NaN
+Burundi,2020-11,NaN
+Cambodia,2020-11,NaN
+Cameroon,2020-11,NaN
+Canada,2020-11,NaN
+Cape Verde,2020-11,NaN
+Cayman Islands,2020-11,NaN
+Central African Republic,2020-11,NaN
+Chad,2020-11,NaN
+Chile,2020-11,NaN
+China,2020-11,NaN
+Colombia,2020-11,NaN
+Comoros,2020-11,NaN
+Congo,2020-11,NaN
+Costa Rica,2020-11,NaN
+Cote d'Ivoire,2020-11,NaN
+Croatia,2020-11,NaN
+Cuba,2020-11,NaN
+Curacao,2020-11,NaN
+Cyprus,2020-11,NaN
+Czech Republic,2020-11,NaN
+Democratic Republic of Congo,2020-11,NaN
+Denmark,2020-11,NaN
+Djibouti,2020-11,NaN
+Dominica,2020-11,NaN
+Dominican Republic,2020-11,NaN
+Ecuador,2020-11,NaN
+Egypt,2020-11,NaN
+El Salvador,2020-11,NaN
+Equatorial Guinea,2020-11,NaN
+Eritrea,2020-11,NaN
+Estonia,2020-11,NaN
+Ethiopia,2020-11,NaN
+Faeroe Islands,2020-11,NaN
+Falkland Islands,2020-11,NaN
+Fiji,2020-11,NaN
+Finland,2020-11,NaN
+France,2020-11,NaN
+French Polynesia,2020-11,NaN
+Gabon,2020-11,NaN
+Gambia,2020-11,NaN
+Georgia,2020-11,NaN
+Germany,2020-11,NaN
+Ghana,2020-11,NaN
+Gibraltar,2020-11,NaN
+Greece,2020-11,NaN
+Greenland,2020-11,NaN
+Grenada,2020-11,NaN
+Guam,2020-11,NaN
+Guatemala,2020-11,NaN
+Guernsey,2020-11,NaN
+Guinea,2020-11,NaN
+Guinea-Bissau,2020-11,NaN
+Guyana,2020-11,NaN
+Haiti,2020-11,NaN
+Honduras,2020-11,NaN
+Hong Kong,2020-11,NaN
+Hungary,2020-11,NaN
+Iceland,2020-11,NaN
+India,2020-11,NaN
+Indonesia,2020-11,NaN
+International,2020-11,NaN
+Iran,2020-11,NaN
+Iraq,2020-11,NaN
+Ireland,2020-11,NaN
+Isle of Man,2020-11,NaN
+Israel,2020-11,NaN
+Italy,2020-11,NaN
+Jamaica,2020-11,NaN
+Japan,2020-11,NaN
+Jersey,2020-11,NaN
+Jordan,2020-11,NaN
+Kazakhstan,2020-11,NaN
+Kenya,2020-11,NaN
+Kosovo,2020-11,NaN
+Kuwait,2020-11,NaN
+Kyrgyzstan,2020-11,NaN
+Laos,2020-11,NaN
+Latvia,2020-11,NaN
+Lebanon,2020-11,NaN
+Lesotho,2020-11,NaN
+Liberia,2020-11,NaN
+Libya,2020-11,NaN
+Liechtenstein,2020-11,NaN
+Lithuania,2020-11,NaN
+Luxembourg,2020-11,NaN
+Macedonia,2020-11,NaN
+Madagascar,2020-11,NaN
+Malawi,2020-11,NaN
+Malaysia,2020-11,NaN
+Maldives,2020-11,NaN
+Mali,2020-11,NaN
+Malta,2020-11,NaN
+Marshall Islands,2020-11,NaN
+Mauritania,2020-11,NaN
+Mauritius,2020-11,NaN
+Mexico,2020-11,NaN
+Moldova,2020-11,NaN
+Monaco,2020-11,NaN
+Mongolia,2020-11,NaN
+Montenegro,2020-11,NaN
+Montserrat,2020-11,NaN
+Morocco,2020-11,NaN
+Mozambique,2020-11,NaN
+Myanmar,2020-11,NaN
+Namibia,2020-11,NaN
+Nepal,2020-11,NaN
+Netherlands,2020-11,NaN
+New Caledonia,2020-11,NaN
+New Zealand,2020-11,NaN
+Nicaragua,2020-11,NaN
+Niger,2020-11,NaN
+Nigeria,2020-11,NaN
+Northern Mariana Islands,2020-11,NaN
+Norway,2020-11,NaN
+Oman,2020-11,NaN
+Pakistan,2020-11,NaN
+Palestine,2020-11,NaN
+Panama,2020-11,NaN
+Papua New Guinea,2020-11,NaN
+Paraguay,2020-11,NaN
+Peru,2020-11,NaN
+Philippines,2020-11,NaN
+Poland,2020-11,NaN
+Portugal,2020-11,NaN
+Puerto Rico,2020-11,NaN
+Qatar,2020-11,NaN
+Romania,2020-11,NaN
+Russia,2020-11,NaN
+Rwanda,2020-11,NaN
+Saint Kitts and Nevis,2020-11,NaN
+Saint Lucia,2020-11,NaN
+Saint Vincent and the Grenadines,2020-11,NaN
+San Marino,2020-11,NaN
+Sao Tome and Principe,2020-11,NaN
+Saudi Arabia,2020-11,NaN
+Senegal,2020-11,NaN
+Serbia,2020-11,NaN
+Seychelles,2020-11,NaN
+Sierra Leone,2020-11,NaN
+Singapore,2020-11,NaN
+Sint Maarten (Dutch part),2020-11,NaN
+Slovakia,2020-11,NaN
+Slovenia,2020-11,NaN
+Solomon Islands,2020-11,NaN
+Somalia,2020-11,NaN
+South Africa,2020-11,NaN
+South Korea,2020-11,NaN
+South Sudan,2020-11,NaN
+Spain,2020-11,NaN
+Sri Lanka,2020-11,NaN
+Sudan,2020-11,NaN
+Suriname,2020-11,NaN
+Swaziland,2020-11,NaN
+Sweden,2020-11,NaN
+Switzerland,2020-11,NaN
+Syria,2020-11,NaN
+Taiwan,2020-11,NaN
+Tajikistan,2020-11,NaN
+Tanzania,2020-11,NaN
+Thailand,2020-11,NaN
+Timor,2020-11,NaN
+Togo,2020-11,NaN
+Trinidad and Tobago,2020-11,NaN
+Tunisia,2020-11,NaN
+Turkey,2020-11,NaN
+Turks and Caicos Islands,2020-11,NaN
+Uganda,2020-11,NaN
+Ukraine,2020-11,NaN
+United Arab Emirates,2020-11,NaN
+United Kingdom,2020-11,NaN
+United States,2020-11,NaN
+United States Virgin Islands,2020-11,NaN
+Uruguay,2020-11,NaN
+Uzbekistan,2020-11,NaN
+Vanuatu,2020-11,NaN
+Vatican,2020-11,NaN
+Venezuela,2020-11,NaN
+Vietnam,2020-11,NaN
+Wallis and Futuna,2020-11,NaN
+Western Sahara,2020-11,NaN
+World,2020-11,NaN
+Yemen,2020-11,NaN
+Zambia,2020-11,NaN
+Zimbabwe,2020-11,NaN
