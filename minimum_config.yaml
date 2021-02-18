@@ -41,3 +41,73 @@ mask:
 refine:
   root: "Wuhan/Hu-1/2019 Wuhan/WH01/2019" 
 
+
+# We are using a different subsampling strategy from NextStrain, where we are weighting the sampling on the estimated number of cases per country.
+# So we are using the same param naming scheme but not the same params.
+subsampling:
+  # Default subsampling logic for regions
+  region:
+    # Focal samples for region
+    region:
+      group_by: "division year month"
+      seq_per_group: 48
+      exclude: "--exclude-where 'region!={region}'"
+    # Contextual samples for region from the rest of the world
+    global:
+      group_by: "country year month"
+      seq_per_group: 4
+      exclude: "--exclude-where 'region={region}'"
+      priorities:
+        type: "proximity"
+        focus: "region"
+
+  # Custom subsampling logic for global region.
+  region_global:
+    global:
+      group_by: "country year month"
+      seq_per_group: 20
+
+  # Custom subsampling logic for regions like Europe where grouping by country
+  # is the smallest resolution required.
+  region_grouped_by_country:
+    # Focal samples for region
+    region:
+      group_by: "country year month"
+      seq_per_group: 64
+      exclude: "--exclude-where 'region!={region}'"
+    # Contextual samples for region from the rest of the world
+    global:
+      group_by: "country year month"
+      seq_per_group: 6
+      exclude: "--exclude-where 'region={region}'"
+      priorities:
+        type: "proximity"
+        focus: "region"
+
+  # Default subsampling logic for countries
+  country:
+    # Focal samples for country
+    country:
+      # Added for Nybbler specifically, we have estimates of disease prevalence we want to use to guide sampling
+      # Uncomment this line to generate a less-biased sampling strategy for MCMC input etc.
+      # weighted_sampling_estimates: "country_ideal_sequences.csv"
+      group_by: "division year month"
+      seq_per_group: 200
+      exclude: "--exclude-where 'country!={country}'"
+    # Contextual samples from country's region
+    region:
+      group_by: "country year month"
+      seq_per_group: 20
+      exclude: "--exclude-where 'country={country}' 'region!={region}'"
+      priorities:
+        type: "proximity"
+        focus: "country"
+    # Contextual samples from the rest of the world,
+    # excluding the current region to avoid resampling.
+    global:
+      group_by: "country year month"
+      seq_per_group: 10
+      exclude: "--exclude-where 'region={region}'"
+      priorities:
+        type: "proximity"
+        focus: "country"

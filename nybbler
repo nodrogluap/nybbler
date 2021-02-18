@@ -11,8 +11,9 @@ use File::Basename;        # core
 use File::Temp 'tempdir';  # core
 use Time::Piece;          
 use File::Fetch;           
+use List::Util 'shuffle';  # for randomization
 use YAML::XS 'LoadFile';   # typically via bioconda perl-yaml-libyaml
-use vars qw($genbank_id_placeholder $query_key_placeholder $webenv_placeholder $format_placeholder $genbank_eutils_search_uri $genbank_eutils_fetch_fasta_uri);
+use vars qw($genbank_id_placeholder $query_key_placeholder $webenv_placeholder $format_placeholder $genbank_eutils_search_uri $genbank_eutils_fetch_fasta_uri %country_2_month_2_inferred_sample_count);
 
 $genbank_id_placeholder = "_ID_PLACEHOLDER_";
 $format_placeholder = "__format__";
@@ -60,11 +61,17 @@ if(exists $nextstrain_config->{"mask"}->{"mask_sites_vcf"}){
 	}
 }
 
+my %country2month2samples;
+if(exists $nextstrain_config->{"subsampling"}->{"country"}->{"country"}->{"weighted_sampling_estimates"}){
+	read_sampling_strategy($nextstrain_config->{"subsampling"}->{"country"}->{"country"}->{"weighted_sampling_estimates"},
+                               \%country2month2samples);
+}
+
 # Get (specially adjusted) samtools MD and CIGAR strings for each sequence relative to the reference genome used in the VCF, so masked sites 
 # can be applied appropriately using reference-based coordinates.
 my (%id2sequence, %id2seqhash);
 print STDERR "Loading sequences and calculating keys\n";
-&get_seqs_and_hashkeys($genbank_reference_id, $nextstrain_config, \%pos2mask, \%id2sequence, \%id2seqhash);
+my $ref_seq_length = &get_seqs_and_hashkeys($genbank_reference_id, $nextstrain_config, \%pos2mask, \%id2sequence, \%id2seqhash);
 
 # Read in all the sequences, adjusting them to the relevant NextStrain alignment region vis-a-vis the reference genome.
 my %id2date;
@@ -106,7 +113,9 @@ my $redux_metadata_file = "$output_dir/".basename($nextstrain_config->{"metadata
 my $redux_sequence_file = "$output_dir/".basename($nextstrain_config->{"sequences"});
 print STDERR "Writing new metadata ($redux_metadata_file) and sequence ($redux_sequence_file)\n";
 write_new_combined_metadata($redux_metadata_file, \%id2title, $metadata_local, $nextstrain_config->{"metadata"});
-write_sequences(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2sequence, $jurisdiction_granularity_level, $redux_sequence_file);
+
+write_sequences(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2sequence, \%country2month2samples, 
+                $ref_seq_length, $jurisdiction_granularity_level, $redux_sequence_file);
 
 ###################################
 # subroutine definitions
@@ -133,7 +142,7 @@ sub diff_in_days{
 		if(defined $prev_date){
 			my ($prev_year, $prev_month) = $prev_date =~ /^(\d+)-0?(\d+)/;
 			if($prev_year < $year or $prev_year == $year and $prev_month < $month){
-				$start_date = "$prev_year-$zero_pad$prev_month-".int(days_in($prev_year, $prev_month)/2);
+				$start_date = "$prev_year-".($prev_month < 10 ? "0" : "")."$prev_month-".int(days_in($prev_year, $prev_month)/2);
 				$i--; # we used the previous date, so gotta rewind
 				last;
 			}
@@ -158,7 +167,7 @@ sub diff_in_days{
 				if($prev_year > $year or $prev_year == $year and $prev_month > $month){
 					# The incomplete date is in a later month than the latest specific data available,
 					# report the date difference to the middle of the month to reduce bias.
-					$end_date = "$prev_year-$zero_pad$prev_month-".int(days_in($prev_year, $prev_month)/2);
+					$end_date = "$prev_year-".($prev_month < 10 ? "0" : "")."$prev_month-".int(days_in($prev_year, $prev_month)/2);
 					$j++;
 				}
 			}
@@ -264,7 +273,7 @@ sub days_in{
 		return 31;
 	}
 	elsif($month == 2){
-		return ($year % 4 == 0 and ($year % 400 == 0 or $year % 100) ? 29 : 28);
+		return (($year % 4 == 0 and ($year % 400 == 0 or $year % 100)) ? 29 : 28);
 	}	
 	else{
 		return 30;
@@ -356,7 +365,8 @@ sub write_new_combined_metadata{
 }
 	
 sub write_sequences{
-	my ($key2earliest_id, $key2later_ids, $id2date, $id2sequence, $jurisdiction_granularity_level, $redux_sequence_file) = @_;
+	my ($key2earliest_id, $key2later_ids, $id2date, $id2sequence, $country2month2samples, 
+            $reference_length, $jurisdiction_granularity_level, $redux_sequence_file) = @_;
 
 	open(FASTA_OUT, ">$redux_sequence_file")
 	  or die "Cannot open $redux_sequence_file for writing: $!\n";
@@ -367,7 +377,7 @@ sub write_sequences{
 	my %jurisdiction_totals; # so we can calculate proportions 
 	if(defined $jurisdiction_granularity_level){
 		for my $key (@all_keys){
-			my @key_fields = split(":", $key);
+			my @key_fields = split(/[:\/]/, $key);
 			my $num_samples_per_key = (exists $key2later_ids->{$key} ? scalar(@{$key2later_ids->{$key}}) : 0) + 1;
 			my $global_key_prefix = join(":", @key_fields[0 .. 2]).":";
                         $global_instances{$global_key_prefix} += $num_samples_per_key;
@@ -375,6 +385,7 @@ sub write_sequences{
 			$jurisdiction_totals{$global_key_suffix} += $num_samples_per_key;
                 } 
 	}
+	my %fasta_formatted_sequences_to_be_printed_by_country_and_month;
 	for my $key (sort {date_cmp($id2date, $key2earliest_id->{$a}, $key2earliest_id->{$b})} @all_keys){ 
 		my $id = $key2earliest_id->{$key};
 		my @ids_by_date = exists $key2later_ids->{$key} ? sort({date_cmp($id2date, $a, $b)} @{$key2later_ids->{$key}}, $id) : ($id);
@@ -382,7 +393,7 @@ sub write_sequences{
 		# Do some key manipulation to see how often the sequence exists across all jurisdictions 
 		my $jurisdiction_proportion = "";
 		my $jurisdiction_instances = "";
-		my @key_fields = split(":", $key, -1); # -1 meanbs keep the last field if blank after the delimiter
+		my @key_fields = split(/[:\/]/, $key, -1); # -1 means keep the last field if blank after the delimiter
 		my $global_key_prefix = join(":", @key_fields[0 .. 2]).":";
 		my $global_instances = "global=". (defined $jurisdiction_granularity_level ? $global_instances{$global_key_prefix} : scalar(@ids_by_date)) . " ";
 		if(defined $jurisdiction_granularity_level){
@@ -394,11 +405,85 @@ sub write_sequences{
 		my @dates = map {date2str($id2date, $_)} @ids_by_date;
 		my ($diff, $min_idx, $max_idx) = diff_in_days(@dates);
 		$ids_by_date[$max_idx] .= "*" if $#dates;
-		print FASTA_OUT ">$id hash=\"$key\" date-range=\"[$dates[0],",$dates[$#dates], "]\" days=$diff ", 
+		my $country = $key_fields[$#key_fields];
+		# TODO: set the minimum span for resampling ($diff) to a configureable amount in the YAML file
+		if(not keys %$country2month2samples or keys %$country2month2samples and $diff < 14){
+			my $year_month = $dates[0]; 
+			$year_month =~ s/^(\d\d\d\d-\d\d)-\d\d$/$1/; # YYYY-MM-DD -> YYYY-MM
+			$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country} //= {};
+			push @{$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}->{$year_month}}, join("", 
+                                 ">$id hash=\"$key\" date-range=\"[$dates[0],",$dates[$#dates], "]\" days=$diff ", 
 				 $global_instances, $jurisdiction_instances, $jurisdiction_proportion, 
-                                 join(" ", grep {$_ ne $id and $_ ne "$id*"} @ids_by_date), "\n", $id2sequence->{$id}, "\n";
+                                 join(" ", grep {$_ ne $id and $_ ne "$id*"} @ids_by_date), "\n", $id2sequence->{$id}, "\n");
+		}
+		else{
+			# An exact sequence that persists over a period longer than expected for a mutation to occur
+			# can be resampled in a monthly breakdown situation
+			my %uniqueseq_per_month2first_sample;
+			for (my $i = 0; $i <= $#dates; $i++){
+				my $year_month = $dates[$i];
+				$year_month =~ s/^(\d\d\d\d-\d\d)-\d\d$/$1/; # YYYY-MM-DD -> YYYY-MM
+				$uniqueseq_per_month2first_sample{$year_month} ||= $ids_by_date[$i];
+			}
+			for my $year_month (keys %uniqueseq_per_month2first_sample){
+				my $first_sample_of_the_month_id = $uniqueseq_per_month2first_sample{$year_month};
+				$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country} //= {};
+				push @{$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}->{$year_month}}, join("", 
+                                 ">$first_sample_of_the_month_id hash=\"$key\" date-range=\"[$dates[0],",$dates[$#dates], "]\" days=$diff ", 
+                                 $global_instances, $jurisdiction_instances, $jurisdiction_proportion, 
+                                 join(" ", grep {$_ ne $id and $_ ne "$id*"} @ids_by_date), "\n", $id2sequence->{$id}, "\n");
+
+			}
+		}
 	}
+	# If a subsampling strategy was requested, here we will pick the subset (or super set in the case of insufficient data)
+	for my $country (sort keys %$country2month2samples){
+		next if $country eq "World"; #special case of rolled up stat
+		if(not exists $fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}){
+			#warn "Skipping requested sampling jurisdiction $country, it does not exist in the sequence file provided\n";
+			next;
+		}
+		for my $month (keys %{$country2month2samples->{$country}}){
+			my $desired_sample_count_this_month_this_jurisdiction = $country2month2samples->{$country}->{$month};
+			my $available_samples_this_month_this_jurisdiction = $fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}->{$month};
+			my $available_sample_count_this_month_this_jurisdiction = defined $available_samples_this_month_this_jurisdiction ? 
+                                                                                          scalar(@{$available_samples_this_month_this_jurisdiction}) : 
+                                                                                          0;
+			#print "Available sequence count for $country in $month is $available_sample_count_this_month_this_jurisdiction, request is $desired_sample_count_this_month_this_jurisdiction\n";
+			if($available_sample_count_this_month_this_jurisdiction == 0){
+				$available_samples_this_month_this_jurisdiction = [];
+			}
+			if($desired_sample_count_this_month_this_jurisdiction > $available_sample_count_this_month_this_jurisdiction){
+				for (my $i = $available_sample_count_this_month_this_jurisdiction; $i < $desired_sample_count_this_month_this_jurisdiction; $i++){
+					push @$available_samples_this_month_this_jurisdiction, fasta_format_N_sequence($country, $month, $reference_length);
+				}
+			}
+			elsif($desired_sample_count_this_month_this_jurisdiction < $available_sample_count_this_month_this_jurisdiction){
+				my @available_samples_this_month_this_jurisdiction = shuffle(@$available_samples_this_month_this_jurisdiction);
+				$available_samples_this_month_this_jurisdiction = [@available_samples_this_month_this_jurisdiction[0 .. ($desired_sample_count_this_month_this_jurisdiction-1)]];
+			}
+			$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}->{$month} = $available_samples_this_month_this_jurisdiction;
+		}
+	}
+	for my $country (keys %fasta_formatted_sequences_to_be_printed_by_country_and_month){
+		for my $year_month (sort keys %{$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}}){
+			if(keys %$country2month2samples){
+				next unless exists $country2month2samples->{$country} and exists $country2month2samples->{$country}->{$year_month};
+			}
+			print FASTA_OUT @{$fasta_formatted_sequences_to_be_printed_by_country_and_month{$country}->{$year_month}};
+		}
+	} 
 	close(FASTA_OUT);
+}
+
+sub fasta_format_N_sequence{
+	my ($country, $year_month, $reference_length) = @_;
+	my ($year, $month) = $year_month =~ /^(\d\d\d\d)-(\d\d)$/;
+	$country_2_month_2_inferred_sample_count{$country} //= {};
+	$country_2_month_2_inferred_sample_count{$country}->{$year_month}++;
+	return join("", ">$country/Inferred-month-$month-sample-", $country_2_month_2_inferred_sample_count{$country}->{$year_month}, 
+                                 "/$year hash=\"",$reference_length,"M::\" date-range=\"[$year-$month,$year-$month]\" days=NA ",
+                                 "\n", ("N" x $reference_length), "\n");
 }
 
 sub date2str{
@@ -533,6 +618,7 @@ sub get_seqs_and_hashkeys{
 	# Launch MD-annotated minimap2 alignment child process, params adjusted to minimize mismatch penalty, maximize match extensions and gap spanning.
 	# This minizes the soft-clipping that can lead to false positive sameness  in non-masked areas of less than complete genomes.
 	open(MINIMAP2, "minimap2 -t 6 -B 2 -O 2 -E 2 -z 1000,500 -s 40 -a --MD $tmp_ref_fasta $query_file|")
+	#open(MINIMAP2, "minimap2 -t 6 -A 4 -B 2 -O 4,100 -E 1,0 -z 1000,500 -s 40 -a --MD --score-N 3 -a --MD $tmp_ref_fasta $query_file|")
 	  or die "Cannot run minimap2: $!\n";
 
 	# Read the alignment ref start position, CIGAR (query consumption) and MD (ref consumption) results; adjust to generate common coordinate/diff system
@@ -722,6 +808,8 @@ sub get_seqs_and_hashkeys{
 			warn "Warning: input sequence $id had no mapping result against the reference genome, ignoring this sequence for downstream processing\n";
 		}
 	}
+
+	return $reference_length;
 }
 
 sub read_fasta{
@@ -881,7 +969,7 @@ sub sample2key{
 	my ($metadata, $id2seqhash, $jurisdiction_granularity_level) = @_;
 	my $id = $metadata->[0];
 	if(not exists $id2seqhash->{$id}){	
-		warn "Skipping metadata entry $id because no equivalent sequence was found.\n";
+		#warn "Skipping metadata entry $id because no equivalent sequence was found.\n";
 		return undef;
 	}
 	if(not defined $jurisdiction_granularity_level){
@@ -890,3 +978,30 @@ sub sample2key{
 	return $id2seqhash->{$id}.":".join("/",@{$metadata}[5 .. ($jurisdiction_granularity_level+5)]); # simple map of granularity level to field index in metadata
 }
 
+
+sub read_sampling_strategy{
+	my ($sampling_data_file_csv, $country2month2samples) = @_;
+
+	print "Parsing sampling strategy data file $sampling_data_file_csv\n";
+	open(SAMPLING_CSV, $sampling_data_file_csv)
+		or die "Cannot open $sampling_data_file_csv for reading: $!\n";
+	<SAMPLING_CSV>; # ignore the first header line in the CSV
+	while(<SAMPLING_CSV>){
+		tr/\r\n//d; # if DOS formatted CSV, etc.
+		my ($location, $date, $sampling_rate, $extra_fields) = split(/,/, $_);
+		if(not defined $location or not defined $date or not defined $sampling_rate){
+			warn "Could not parse location/date/sampling rate trio as comma separated values at $sampling_data_file_csv line #$.\n";
+			next;
+		}
+		if($sampling_rate eq "NA" or $sampling_rate eq "NaN"){
+			next;
+		}
+		if($date !~ /^\d\d\d\d-\d\d$/){
+			warn "Could not parse date as ISO-8601 YYYY-MM at $sampling_data_file_csv line #$.\n";
+			next;
+		}
+		$country2month2samples->{$location} //= {};
+		$country2month2samples->{$location}->{$date} = $sampling_rate;
+	}
+	close(SAMPLING_CSV);
+}
