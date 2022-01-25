@@ -107,6 +107,7 @@ print STDERR "Found ", scalar(keys %key2earliest_id), "/", scalar(keys %id2seque
 # e.g. date range of the identical isolates, and if they differ in the "caution" sites
 my %id2title;
 generate_titles(\%key2earliest_id, \%key2later_ids, \%id2date, \%id2title);
+print STDERR "Generated new metadata for ", (scalar %id2title), ", first id2title is ",each(%id2title),"\n";
 
 # Print the new metadata and sequence files
 my $redux_metadata_file = "$output_dir/".basename($nextstrain_config->{"metadata"});
@@ -334,8 +335,8 @@ sub write_new_combined_metadata{
           or die "Cannot open $metadata_file_out for writing: $!\n";
 	my %column_name2index;
 	my %id_printed_already; # avoid dupes between multiple metadata files
-	my $column_to_override = "title";
-	my $id_column_name = "strain";
+	my $column_to_override = "AA Substitutions";
+	my $id_column_name = "Virus name";
 	for my $metadata_file (@metadata_files){
 		next if not defined $metadata_file;
 		open(META_IN, $metadata_file)
@@ -354,6 +355,9 @@ sub write_new_combined_metadata{
 			}
 			my @F = split /\t/, $_;
 			my $id = $F[$column_name2index{$id_column_name}];
+			if(not exists $id2title->{$id}){
+				#print STDERR "Skipping $id, not found in id2title\n";
+			}
 			next unless exists $id2title->{$id}; # is it a keeper?
 			if(defined $id2title->{$id}){ # does it have useful new title data
 				$F[$column_name2index{$column_to_override}] = $id2title->{$id}; 
@@ -499,6 +503,7 @@ sub generate_titles{
 
 	for my $key (keys %$key2earliest_id){ # key is the concatenation of the seqhash and juridiction for a sample
 		if(not exists $key2later_ids->{$key}){ # nothing to summarize
+			#print STDERR "Skipping $key, no key2later_ids\n";
 			$id2title->{$key2earliest_id->{$key}} = undef;
 			next;
 		}
@@ -516,7 +521,7 @@ sub generate_titles{
 			}	
 		}
 		$title .= ", with identical sequence after masking known problematic sites";
-	 	$id2title->{$key2earliest_id->{$key}} = $title eq "see also " ? undef : $title;
+	 	$id2title->{$key2earliest_id->{$key}} = $title;
 	}
 }
 
@@ -616,9 +621,9 @@ sub get_seqs_and_hashkeys{
 	close(QUERY);
 
 	# Launch MD-annotated minimap2 alignment child process, params adjusted to minimize mismatch penalty, maximize match extensions and gap spanning.
-	# This minizes the soft-clipping that can lead to false positive sameness  in non-masked areas of less than complete genomes.
-	open(MINIMAP2, "minimap2 -t 6 -B 2 -O 2 -E 2 -z 1000,500 -s 40 -a --MD $tmp_ref_fasta $query_file|")
-	#open(MINIMAP2, "minimap2 -t 6 -A 4 -B 2 -O 4,100 -E 1,0 -z 1000,500 -s 40 -a --MD --score-N 3 -a --MD $tmp_ref_fasta $query_file|")
+	# This minimizes the soft-clipping that can lead to false positive sameness in non-masked areas of less than complete genomes.
+	#open(MINIMAP2, "minimap2 -t 6 -B 2 -O 2 -E 2 -z 1000,500 -s 40 -a --MD $tmp_ref_fasta $query_file|")
+	open(MINIMAP2, "minimap2 -t 6 -A 4 -B 2 -O 4,100 -E 1,0 -z 1000,500 -s 40 -a --MD --score-N 3 -a --MD $tmp_ref_fasta $query_file|")
 	  or die "Cannot run minimap2: $!\n";
 
 	# Read the alignment ref start position, CIGAR (query consumption) and MD (ref consumption) results; adjust to generate common coordinate/diff system
@@ -639,6 +644,10 @@ sub get_seqs_and_hashkeys{
 		my @F = split /\t/, $_;
 		# Pertinent columns are 1-4, 6, 10, second-to-last
 		# Run sanity checks first
+		if($F[2] eq "*"){ # No match
+			warn "No reference match for query $F[0]\n";
+			next;
+		}
 		if(defined $genbank_reference_id and $F[2] ne $genbank_reference_id){
 			die "Something is very wrong: reference in samtools output ($F[2]) was not expected value from GenBank '$genbank_reference_id'\n";
 		}
@@ -674,7 +683,7 @@ sub get_seqs_and_hashkeys{
 			my ($clip) = $cigar =~ /^(\d+)[HS]/;
 			$clip ||= 0;
 			if($five_prime_supplement > $clip){
-				$cigar = ($five_prime_supplement-$clip)."N".$cigar; # mark the loction of the match start by prepending the CIGAR "skipped region" info
+				$cigar = ($five_prime_supplement-$clip)."N".$cigar; # mark the location of the match start by prepending the CIGAR "skipped region" info
 			}
 			$five_prime_supplement = 0;
 		}
@@ -686,6 +695,18 @@ sub get_seqs_and_hashkeys{
 		while($cigar =~ /^(\d+)M(\d+)[DIM]/ and $1+$2 <= $nextstrain_config->{"mask"}->{"mask_from_beginning"}){
                         $cigar =~ s/^(\d+)M(\d+)([DIM])/($1+($3 ne "I" ? $2 : 0))."M"/e;
                 }
+
+		# Long stretches of N's can induce a CIGAR match with #I#D, ignore these as it just makes for a very long key with N's on the end.
+		my $simplified_cigar = $cigar;
+		while($cigar =~ /(\d+)I\1D/g){
+			my $mirror_length = $1; # the insertion and immediately following deletion "mirror" each other in length
+			next if $mirror_length < 20; # this could be real indel stuff
+			# TODO: check if the sequence in this region is all Ns
+			$simplified_cigar =~ s/$mirror_length(I)$mirror_length(D)/$mirror_length."M"/e;
+			# remove the corresponding bit of the MD too
+			$md =~ s/\^[ACGT]{$mirror_length}(?:\d)//;
+		}
+		$cigar = $simplified_cigar;
 
 		# See how far in the reference the alignment extends, then extend to the end if terminus is within the masked region.
 		my $three_prime_supplement = $reference_length - $reference_bases_consumed - $five_prime_supplement;
@@ -716,7 +737,9 @@ sub get_seqs_and_hashkeys{
                 }
 
 		# Merge any runs of matches that we created.
-		$cigar =~ s/(\d+)M(\d+)M/($1+$2)."M"/eg;
+		while($cigar =~ /\d+M\d+M/){
+			$cigar =~ s/(\d+)M(\d+)M/($1+$2)."M"/eg;
+		}
 
 		# Now we need to ignore the masked reference bases if they are causing non-match in the MD.
 		if(defined $nextstrain_config->{"mask"}->{"mask_sites"}){
@@ -792,9 +815,28 @@ sub get_seqs_and_hashkeys{
 			}
 		}
 
+		# Long stretches of N's can induce a CIGAR match with #I#D, ignore these as it just makes for a very long key with N's on the end.
+                $simplified_cigar = $cigar;
+		my $inserted_bases_cursor = 0;
+                while($cigar =~ /(\d+)I(\d+)([DM])/g){
+			$inserted_bases_cursor += $1;
+			next if $3 eq "M" or $1 != $2;
+                        my $mirror_length = $1; # the insertion and immediately following deletion "mirror" each other in length
+                        # Check if the sequence in this region is all Ns
+			if(substr($insert_bases, $inserted_bases_cursor-$mirror_length, $mirror_length) =~ /^N+$/){
+                        	$simplified_cigar =~ s/$mirror_length(I)$mirror_length(D)/$mirror_length."M"/e;
+				substr($insert_bases, $inserted_bases_cursor-$mirror_length, $mirror_length) = "";
+				$inserted_bases_cursor -= $mirror_length;
+                        	# remove the corresponding bit of the MD too
+				# TODO: this is a hack, may remove a real ins and leave the N's del?
+                        	$md =~ s/\^[ACGT]{$mirror_length}(?:\d)//;
+			}
+                }
+                $cigar = $simplified_cigar;
+
 		# Option to aggressively consider seqs the same if they differ only in end-gaps outside the end-masked regions.
-		# $cigar =~ s/^(\d+)N(\d+)M/($1+$2)."M"/e;
-		# $cigar =~ s/(\d+)M(\d+)N$/($1+$2)."M"/e;
+		$cigar =~ s/^(\d+)N(\d+)M/($1+$2)."M"/e;
+		$cigar =~ s/(\d+)M(\d+)N$/($1+$2)."M"/e;
 
 		# Record the MD that has eliminated masked difference from the alignment.
 		$id2hashkey->{$id} = $new_md.":".$cigar.":".$insert_bases;
@@ -818,12 +860,12 @@ sub read_fasta{
 	  or die "Cannot open ", $nextstrain_config->{"sequences"}, " for reading: $!\n";
 	my ($id, $seq);
 	while(<FASTA>){
-		if(/>(\S+)/){
+		if(/>(.+?)\|/){ # new format of id line is id|date-collected|date_submitted
 			if(defined $id and length($seq) >= $min_length){
 				$data_out->{$id} = $seq; 
 			}
 			$seq = "";
-			$id = $1; next;
+			$id = $1; $id =~ tr/ /_/; next; # spaces in ID will cause downstream issues with minimap2 output
 		}
 		else{
 			$seq .= $1 while /(\S+)/g;
@@ -882,6 +924,7 @@ sub read_metadata_file{
 		chomp;
 		my @F = split /\t/, $_;
 		my $id = $F[0];
+		$id =~ tr/ /_/; # changing spaces to underscores avoids issues with minimap2 output parsing later
 		my $key = sample2key(\@F, $id2seqhash, $jurisdiction_granularity_level);
 		next unless defined $key;
 		if(exists $id2date->{$id}){
@@ -890,7 +933,7 @@ sub read_metadata_file{
 			}
 			next; # silently ignore redefinition if not in override mode
 		}
-		$id2date->{$id} = [split /-/, $F[4]];
+		$id2date->{$id} = [split /-/, $F[3]];
 		
 		if(exists $key2earliest_id->{$key}){
 			my $existing_id = $key2earliest_id->{$key};
@@ -975,7 +1018,9 @@ sub sample2key{
 	if(not defined $jurisdiction_granularity_level){
 		return $id2seqhash->{$id};
 	}
-	return $id2seqhash->{$id}.":".join("/",@{$metadata}[5 .. ($jurisdiction_granularity_level+5)]); # simple map of granularity level to field index in metadata
+	my @geo_labels = split(/ \/ /, $metadata->[4]);
+	# simple map of granularity level to field index in metadata
+	return $id2seqhash->{$id}.":".join("/", $jurisdiction_granularity_level ? @geo_labels[0 .. ($jurisdiction_granularity_level-1)] : "World"); 
 }
 
 
