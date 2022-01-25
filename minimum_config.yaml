@@ -30,7 +30,7 @@ mask:
   # Specific sites to mask in the reference genome's coordinates.
   # These are 1-indexed coordinates of sites that have been identified as prone to sequencing errors.
   # 13402, 24389 and 24390 are restricted to Belgian samples (comment as per NextStrain YAML file)
-  # Pual Gordon: A low frequency homoplasy encoding Spike protein H49Y (C21707T) is documented in https://jvi.asm.org/content/94/18/e01056-20
+  # Paul Gordon: A low frequency homoplasy encoding Spike protein H49Y (C21707T) is documented in https://jvi.asm.org/content/94/18/e01056-20
   # Checked NextStrain global analysis on 2020-10-16, the last occurrence of C21707T is late July, first in early February.
   mask_sites: "13402 21707 24389 24390"
   # URI VCF files of sites to mask, this is a parameter unique to Nybbler. 
